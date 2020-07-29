@@ -1,0 +1,10 @@
+#remove bin files (all things within /library/uploads/* are .bin files)
+*.bin
+
+#wl depdendencies
+!/library/dependencies
+
+/config.php
+/errors/*-*.txt
+/errors/*-*.txt
+/logs/*.log

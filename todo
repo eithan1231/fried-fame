@@ -1,0 +1,45 @@
+Things of utmost importance:
+DONE 1) Support
+  1.1) Support channels (General help, payment problem, something else?)
+  1.2) WYSIWYG Editor for responses (can be im)
+  1.2) On response, push email notifications.
+NOPE 2) Control client via website through socket communications.
+3) Script Templating (for automatic deploying)
+4) System-wide monitor
+ 4.1) Monitor VPN nodes.
+ 4.2) Monitor requests, etc.
+ 4.3) If node has above xx connections at any given time, create a new node in same geo location.
+ 4.4) Throttling.
+DONE 5) Caching
+  5.1) Configuration cache.
+    5.1.1) Store it in a file (still slow to read from)
+    5.1.2) Port it to a php file, so we can opcache it.
+  5.2) General cache
+NOPE 6) Automatic bad email revert on email change. If user changes email, supplies
+  invalid email, this will revert it to old one.
+DONE 7) Server-Node Health
+8) Subscriptions
+	8.1) Manage payments.
+		ii) Ability to implement other payment gateways with ease
+	8.2) Manage Subscription plans
+9) Administration Panel
+
+
+Things that are of medium importance:
+1) Referral system.
+2) Client API.
+3) Pre-order.
+4) Template CSS files. This will allow for us to change theme color and stuff.
+
+
+
+Things that will be good to have, but aren't of the very most importance.
+1) Link with MPGH account.
+2) Plugin support
+  2.1) Go through, and make hooks for most functions
+  2.2) Make a plugin interface.
+  2.3) Make a file to register plugins.
+3) Refactor, project structure change, general cleanup.
+4) In the future, assuming we need to scale the web servers outwards, we need
+  to synchronize files throughout them. So make something that will automatically
+  sync files throughout multiple servers, then push a command to purge op-cache.
