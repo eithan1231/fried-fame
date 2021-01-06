@@ -8,6 +8,7 @@ This README is incomplete, and this VPN is about 90% complete. Refactoring needs
 - 2 Factor Authentication
 - Administrative Audit Logs (review all Administrative actions)
 - Caching system
+- Analytics system (support for google analytics and countly, EASY to implemt more)
 - Captcha system (easily implement other captchas)
 - Email verification and email list
 - Error and Exception handling
@@ -28,5 +29,6 @@ This README is incomplete, and this VPN is about 90% complete. Refactoring needs
 - SMTP-Client (Coded to the SMTP specification, but since migrated to NodeJS for better efficiency)
 - Client version management (so we can deploy new versions of loaders/clients for linux/nix/windows etc)
 - Automatic database upgrades for when upgrading
+- User bandwidth record. (See how much bandwidth they use on particular day, etc.)
 - has MUCH more features!
 
