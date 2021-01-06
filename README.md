@@ -5,27 +5,28 @@ This README is incomplete, and this VPN is about 90% complete. Refactoring needs
 
 # Feature List
 
-## 2 Factor Authentication
-## Administrative Audit Logs (review all Administrative actions)
-## Caching system
-## Captcha system (easily implement other captchas)
-## Email verification and email list
-## Error and Exception handling
-## Knowledgebase (partial)
-## Multi-lingual support (can add your own languages with relative ease)
-## Logging system (NOT 'vpn logs', rather a system for logging for DEBUGGING purposes see /library/logger)
-## Payment gateway (Currently paypal, easily implement others)
-## in-house router (highly efficient)
-## Announcements
-## Feedback system
-## Multiple Currency support
-## In addition to payment gateway, it has gift-card support.
-## Differnet plans (for payments, kinda like payment 'tiers')
-## Rate limiting, help prevention of hacking/cracking accounts by brute-force
-## User account system (Registration, Recovery, Login, Sessions, Groups and Permissions)
-## Reviews of the VPN (displayed on front-page with censored names)
-## Auto-timezone synchronization. (server and client will calculate their time difference, and associate it with the users session. Used globally on the site)
-## SMTP-Client (Coded to the SMTP specification, but since migrated to NodeJS for better efficiency)
-## Client version management (so we can deploy new versions of loaders/clients for linux/nix/windows etc)
-## Automatic database upgrades for when upgrading
-## has MUCH more features!
+- 2 Factor Authentication
+- Administrative Audit Logs (review all Administrative actions)
+- Caching system
+- Captcha system (easily implement other captchas)
+- Email verification and email list
+- Error and Exception handling
+- Knowledgebase (partial)
+- Multi-lingual support (can add your own languages with relative ease)
+- Logging system (NOT 'vpn logs', rather a system for logging for DEBUGGING purposes see /library/logger)
+- Payment gateway (Currently paypal, easily implement others)
+- in-house router (highly efficient)
+- Announcements
+- Feedback system
+- Multiple Currency support
+- In addition to payment gateway, it has gift-card support.
+- Differnet plans (for payments, kinda like payment 'tiers')
+- Rate limiting, help prevention of hacking/cracking accounts by brute-force
+- User account system (Registration, Recovery, Login, Sessions, Groups and Permissions)
+- Reviews of the VPN (displayed on front-page with censored names)
+- Auto-timezone synchronization. (server and client will calculate their time difference, and associate it with the users session. Used globally on the site)
+- SMTP-Client (Coded to the SMTP specification, but since migrated to NodeJS for better efficiency)
+- Client version management (so we can deploy new versions of loaders/clients for linux/nix/windows etc)
+- Automatic database upgrades for when upgrading
+- has MUCH more features!
+
