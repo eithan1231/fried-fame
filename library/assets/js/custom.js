@@ -46,6 +46,10 @@ class sidebar
 {
   static init()
   {
+    // small mode is, whether or not window is large. Seperate cookies for
+    // small mode and big mode for nicer transitions and state storing.
+    sidebar.smallMode = window.innerWidth < 1024;
+
     sidebar.sidebarElement = document.getElementById('sidebar');
     if(!sidebar.sidebarElement) {
       return;
@@ -66,11 +70,24 @@ class sidebar
 
   static handleWindowResize()
   {
-    if(window.innerWidth < 1024) {
-      if(!sidebar.sidebarElement.hidden) {
-        sidebar.toggle();
+    if(sidebar.smallMode) {
+      if(window.innerWidth >= 1024) {
+        // changed out of small mode.
+        if(sidebar.sidebarElement.hidden) {
+          sidebar.toggle();
+        }
       }
     }
+    else {
+      if(window.innerWidth < 1024) {
+        // going into small mode
+        if(!sidebar.sidebarElement.hidden) {
+          sidebar.toggle();
+        }
+      }
+    }
+
+    sidebar.smallMode = window.innerWidth < 1024;
   }
 
   static toggle()
