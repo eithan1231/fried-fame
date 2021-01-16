@@ -20,6 +20,11 @@ $user = $ff_context->getSession()->getActiveLinkUser();
 $security_token = $ff_context->getSession()->getSecurityToken(true);
 $plans = plan::getPlans(100);
 
+if(!$plans)  {
+	// no plans, cant make giftcard.
+	return $ff_response->redirect($ff_router->getPath('cp_landing'));
+}
+
 $language = $ff_context->getLanguage();
 $ff_response->startOutputBuffer();
 ?>
