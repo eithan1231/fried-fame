@@ -536,6 +536,61 @@ class user
 	}
 
 	/**
+	* returns array of users
+	* @param int $index
+	*		The index we start the query at
+	* @param int $length
+	*		how many we want to return.
+	*/
+	public static function getUsers(int $index, int $length)
+	{
+		global $ff_sql;
+
+		$res = $ff_sql->query_fetch_all("
+			SELECT
+				`users`.`id` AS id,
+				`users`.`username` AS username,
+				`users`.`username_lower` AS username_lower,
+				`users`.`email` AS email,
+				`users`.`email_valid` AS email_valid,
+				`users`.`node_auth` AS node_auth,
+				`groups`.`id` AS group_id,
+				`groups`.`name` AS group_name,
+				`groups`.`color` AS group_color,
+				`groups`.`id` AS group_id
+			FROM
+				`users`
+			INNER JOIN
+				`groups`
+			ON
+				`users`.`group_id` = `groups`.`id`
+			WHERE
+				`users`.`id` > ". $ff_sql->quote($index) ."
+			ORDER BY `users`.`id` ASC
+			LIMIT ". $ff_sql->quote($length) ."
+		");
+
+		return $res;
+	}
+
+	/**
+	* returns amount of users in the database
+	*/
+	public static function getUsersCount()
+	{
+		global $ff_sql;
+
+		$res = $ff_sql->query_fetch("
+			SELECT COUNT(*) as num
+			FROM `users`
+		");
+
+		return intval($res['num']);
+	}
+
+
+
+	/**
 	* Verifies an email
 	*
 	* @param string $token

@@ -18,6 +18,19 @@ $ff_response->setHttpHeader('Content-Type', 'text/html');
 
 $security_token = $ff_context->getSession()->getSecurityToken(true);
 
+// user count
+$userCount = user::getUsersCount();
+
+// generating page data from indexes and lengths
+$page = intval($ff_request->get('page')) ?: 1;
+$length = intval($ff_request->get('perpage')) ?: 100;
+
+// User list data
+$index = ($page - 1) * $length;
+$pageCount = $userCount / $length;
+$userList = user::getUsers($index, $length);
+
+
 $language = $ff_context->getLanguage();
 $ff_response->startOutputBuffer();
 ?>
@@ -57,6 +70,64 @@ $ff_response->startOutputBuffer();
 						</form>
 				  </div>
 				</div>
+
+				<?php if ($userList): ?>
+					<div>
+						<div class="table-responsive">
+							<table class="table">
+							  <thead class="thead-light">
+							    <tr>
+										<th style="border-bottom: 0px" scope="col"><?= $language->getPhrase('oneword-id') ?></th>
+							      <th style="border-bottom: 0px" scope="col"><?= $language->getPhrase('oneword-username') ?></th>
+										<th style="border-bottom: 0px" scope="col"><?= $language->getPhrase('oneword-email') ?></th>
+										<th style="border-bottom: 0px" scope="col"><?= $language->getPhrase('oneword-group') ?></th>
+							    </tr>
+							  </thead>
+							  <tbody>
+									<?php foreach($userList as $user): ?>
+										<?php $profilePage = $ff_router->getPath('cp_mod_user_manage', [], [
+											'query' => [
+												'user' => $user['id']
+											]
+										]) ?>
+										<tr
+										style="overflow: hidden; white-space: nowrap;"
+										class="ff-table-light noselect"
+										data-href="<?= ff_esc($profilePage) ?>"
+										onclick="window.location = this.dataset.href">
+											<td>
+												<?= ff_esc($user['id']) ?>
+											</td>
+
+											<th scope="row" style="text-overflow: ellipsis;">
+												<a href="<?= ff_esc($profilePage) ?>" class="clean-a">
+													<?= ff_esc($user['username']) ?>
+												</a>
+											</th>
+
+											<td>
+												<?= ff_esc($user['email']) ?>
+											</td>
+
+											<td>
+												<span style="color: <?= ff_esc($user['group_color']) ?>">
+													<?= ff_esc($user['group_name']) ?>
+												</span>
+											</td>
+										</tr>
+									<?php endforeach; ?>
+							  </tbody>
+							</table>
+						</div>
+						<?php if ($userCount > $length): ?>
+							<?php snippets_pagebuttons::render([
+								'page' => $page,
+								'perpage' => $length,
+								'pagecount' => $pageCount
+							]) ?>
+						<?php endif; ?>
+					</div>
+				<?php endif; ?>
 			</div>
 		</div>
 
