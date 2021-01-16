@@ -59,7 +59,7 @@ class uploads
 			$realPath = "{$realDir}/{$internalFilename}.bin";
 
 			if(!mkdir($realDir, 0770, true)) {
-				throw new Exception('Unable to make a recisrive directory');
+				throw new Exception('Unable to make a recursive directory');
 			}
 
 			if(!rename($temporaryFile, $realPath)) {
