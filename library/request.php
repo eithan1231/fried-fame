@@ -160,18 +160,6 @@ class request
 			$this->clientIp = $this->headers['x-client-ip'];
 		}
 
-		// Unlikely this is enabled, but if it is, let's fuck it off. There's nothing
-		// better than modifying global variables heuhahahahhaha.
-		if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc() == 1) {
-			foreach ($_POST as &$v) {
-				$v = stripslashes($v);
-			}
-
-			foreach ($_GET as &$v) {
-				$v = stripslashes($v);
-			}
-		}
-
 		if($ff_config->get('cloudflare-mode') && isset($this->headers['x-forwarded-proto'])) {
 			// Cloudflare sets x-forwarded-proto with the protocol being used.
 			$this->secure = ($this->headers['x-forwarded-proto'] === 'https');
