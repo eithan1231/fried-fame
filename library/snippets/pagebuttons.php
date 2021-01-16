@@ -36,13 +36,13 @@ class snippets_pagebuttons implements snippets_snippets
     $renderLink = $getIfSet('renderLink', function($page, $perpage, $above_id) {
       // User has not implemented a custom render link funciton, so we need to
       // do some assuming here.
-      return '?'. http_build_query(array_merge([
+      return '?'. http_build_query(array_merge($_GET, [
         'pp' => $perpage,
         'perpage' => $perpage,
         'per_page' => $perpage,
         'p' => $page,
         'page' => $page
-      ], $_GET));
+      ]));
     });
 
 		if(is_float($maxPageCount)) {
