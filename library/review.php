@@ -216,7 +216,7 @@ class review
 
 		$subscription = $user->getSubscription();
 
-		return $subscription->valid;
+		return $subscription && $subscription->valid;
 	}
 
 	public static function getReviews(int $index, int $count, $filter = [])
