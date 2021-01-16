@@ -23,6 +23,9 @@ if (!$ff_context->getSession()->getActiveLinkUser()->getGroup('mod_ffrpc')) {
 	return;
 }
 $ffrpcs = ffrpc::getRpcList();
+if(!$ffrpcs) {
+	$ff_response->redirect($ff_router->getPath('cp_mod_ffrpc_new'));
+}
 
 $language = $ff_context->getLanguage();
 $ff_response->startOutputBuffer();
