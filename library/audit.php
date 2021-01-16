@@ -40,7 +40,7 @@ class audit
 			new audits_admin_sendemail(),
 			new audits_admin_uploadpackage(),
       new audits_admin_publicsupportstatus(),
-      new audits_admin_knowbasepost();
+      new audits_admin_knowbasepost()
     ];
   }
 
