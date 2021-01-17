@@ -4,6 +4,10 @@
 #wl depdendencies
 !/library/dependencies
 
+# HTML Purifier decided it wanted to cache in our vendor directory.. neat
+/library/dependencies/htmlpurifier/HTMLPurifier/DefinitionCache/Serializer/HTML/*
+/library/dependencies/htmlpurifier/HTMLPurifier/DefinitionCache/Serializer/URI/*
+
 /config.php
 /errors/*-*.txt
 /errors/*-*.txt

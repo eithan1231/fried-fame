@@ -244,6 +244,10 @@ class announcement
 		// Setting the elements we want to allow.
 		$config->set('HTML.Allowed', 'b,i,u,strike,h1,h2,h3,h4,h5,p,blockquote,pre,ul,li,ol,hr,a[href],div');
 
+		// Disabling cache. It stores it in our vendor directory.
+		// TODO: Update this to a caching system supporting our in-house cache.
+		$config->set('Cache.DefinitionImpl', null);
+
 		// Creating purifier object
 		$purifier = new HTMLPurifier($config);
 

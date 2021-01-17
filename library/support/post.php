@@ -271,8 +271,15 @@ class support_post
     // Cleaning
     if($ff_config->get('allow-html-support-posts')) {
       autoloader::load('dependencies/htmlpurifier/HTMLPurifier-includes');
+
+      // setting up config
       $config = HTMLPurifier_Config::createDefault();
       $config->set('HTML.Allowed', 'b,i,u,strike,h1,h2,h3,h4,h5,p,blockquote,pre,ul,li,ol,hr,a[href],div');
+
+      // Disabling cache. It stores it in our vendor directory.
+  		// TODO: Update this to a caching system supporting our in-house cache.
+  		$config->set('Cache.DefinitionImpl', null);
+
       $purifier = new HTMLPurifier($config);
       $this->bodySanitized = $purifier->purify($this->bodySanitized);
     }

@@ -29,3 +29,5 @@ dependencies - ensure they are up to date and secure. consider migrating to a ph
 handlers - unsure about the name 'handlers' for exceptions and errors, maybe consider changing. Feels impropper.
 
 http folder - check if we use this anywhere, if we don't, remove it. We require CURL, which is far more secure.
+
+HTML Purifier Caching - Making our own HTML Purifier caching module to function with the Fried-Fame caching system.
