@@ -250,6 +250,71 @@ class support_thread
 	}
 
   /**
+	* Returns array of support threads
+	*
+  * @param user $user
+	* @param array $filter
+	*		Filter for the results
+	*		Filters:
+	*			deleted: this being true will show deleted threads, otherwise it wont.
+	*				Input can be untrusted.
+	*			closed: unset, this will return all. If this is true, it shows closed,
+	*				if false it hides closed. Input can be untrusted.
+	*			order: unset, this will return all. If this is true, it shows deleted,
+	*				if false it hides deleted. Input can be untrusted.
+	*/
+  public static function getThreadsByUser(user $user, $filter = [])
+  {
+    global $ff_sql;
+
+		$order = 'DESC';
+		$where = [];
+
+		if(isset($filter['order'])) {
+			$filter['order'] = strtolower($filter['order']);
+			if($filter['order'] === 'asc') {
+				$order = 'ASC';
+			}
+		}
+
+		if(isset($filter['closed'])) {
+			if($filter['closed']) {
+				$where[] = '`is_closed` = 1';
+			}
+			else {
+				$where[] = '`is_closed` = 0';
+			}
+		}
+
+		if(isset($filter['deleted'])) {
+			if($filter['deleted']) {
+				$where[] = '`is_deleted` = 1';
+			}
+			else {
+				$where[] = '`is_deleted` = 0';
+			}
+		}
+
+		$where[] = '`user_id` = '. $user->getId();
+
+		return $ff_sql->query_fetch_all("
+			SELECT
+				`id`, `subject`, `date`, `last_post_date`, `is_closed`, `is_deleted`
+			FROM
+				`support_threads`
+			WHERE
+				". implode(" AND ", $where) ."
+			ORDER BY `last_post_date` {$order}
+		", [
+			'id' => 'int',
+			'date' => 'int',
+			'last_post_date' => 'int',
+			'is_closed' => 'bool',
+			'is_deleted' => 'bool',
+		]);
+  }
+
+  /**
   * Inserts a new post.
   *
   * @param user $user

@@ -20,11 +20,11 @@ $language = $ff_context->getLanguage();
 $user = $ff_context->getSession()->getActiveLinkUser();
 $group = $user->getGroup();
 if($group->can('mod_support')) {
-	$tickets = $user->getSupportThreads();
+	$tickets = support_thread::getThreadsByUser($user);
 }
 else {
 	// Not a support mod, hide deleted threads.
-	$tickets = $user->getSupportThreads(['deleted' => false]);
+	$tickets = support_thread::getThreadsByUser($user, ['deleted' => false]);
 }
 
 if(!$tickets || count($tickets) === 0) {
