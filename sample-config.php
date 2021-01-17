@@ -96,9 +96,6 @@ return [
 		'port' => 3422,
 	],
 
-	# The vultr API key. This will be used for auto-scaling, and things as such.
-	'vultr-api-key' => "removed",
-
 	# This is for the theme-color meta tag. Recommend to leave this as default.
 	'theme-color' => "#f8f9fa",
 
