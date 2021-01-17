@@ -31,3 +31,15 @@ handlers - unsure about the name 'handlers' for exceptions and errors, maybe con
 http folder - check if we use this anywhere, if we don't, remove it. We require CURL, which is far more secure.
 
 HTML Purifier Caching - Making our own HTML Purifier caching module to function with the Fried-Fame caching system.
+
+FFRPC SSL support - It's a VPN, security is priority.
+
+submitting a post request that has an error, correcting the error and
+resubmitting it, will create a new session? strange behavior. look into it.
+
+Refactor language class - I dislike the style in which it was written.
+
+Refactor session class - I trust that it works, but sections are poorly written
+and it should be refactored along with the language refactor. There are bad
+parts of the session class due to there being bad parts in language class. (not
+'bad' persay, just not great :p)
