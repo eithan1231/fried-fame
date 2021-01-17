@@ -48,10 +48,6 @@ $ff_response->startOutputBuffer();
 				</li>
 
 				<li>
-					<strong>Logo Design</strong> - <a target="_blank" href="https://www.mpgh.net/forum/member.php?u=3208544">Aku</a>
-				</li>
-
-				<li>
 					<strong>HTML Purifier</strong> - <a target="_blank" href="http://htmlpurifier.org/">http://htmlpurifier.org/</a>
 				</li>
 
