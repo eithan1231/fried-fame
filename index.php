@@ -57,7 +57,6 @@ $ff_router->register(new routes_containers_landing());
 $ff_router->register(new routes_robots());
 $ff_router->register(new routes_contact());
 $ff_router->register(new routes_badpages());
-$ff_router->register(new routes_mpgh());// MPGH Affiliation Page
 $ff_router->register(new routes_credits());
 $ff_router->register(new routes_ping());// Used for status page
 $ff_router->register(new routes_status());
