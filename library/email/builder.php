@@ -134,8 +134,8 @@ class email_builder
 
 	public function send()
 	{
-		$rpc = ffrpc::getRpc(ffrpc::TYPE_TASK);
-		return $rpc->do('email', $this->getParameterOptions());
+		$rpc = ffrpc::getRpcByType(ffrpc::TYPE_EMAIL);
+		return $rpc->do('sendmail', $this->getParameterOptions());
 	}
 
 	private function buildHtml($bodyhtml)

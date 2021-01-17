@@ -1,78 +1,114 @@
 <?php
 
-// ======================================
-//
-// Fried Fame VPN Engine
-// Created by Eithan
-//
-// https://github.com/eithan1231/fried-fame
-// https://eithan.me/
-//
-// \library\ffrpc.php
-//
-// ======================================
-
-
+/**
+* Fried-Fame Remote Procedure Call. This is the class we use for interfacing
+* with other in-house applications in a secure manner.
+*/
 class ffrpc
 {
-  const TYPE_NOTIF = 'ff-rpc-notification';
-  const TYPE_TASK = 'ff-rpc-task';
-
-
-  const CRLF = "\r\n";
-  const CHUNK_SIZE = 1024;
-  private $socket = null;
+  /**
+  * TYPE_EMAIL - responsible for all email delivery
+  */
+  public const TYPE_EMAIL = "ff-email";
 
   /**
-  * Creates a new FF-Rpc client instance
-  *
-  * @param string $hostname
-  *   The hostname (or ip address) of the server we want to connect to.
-  * @param int $port
-  *   The port we will use to connect
-  * @param string $token
-  *   Authentication token that we will use.
+  * TYPE_BACKEND - Responsible for
   */
-  public function __construct(
-    string $hostname,
-    int $port,
-    string $token
-  ) {
-    $this->socket = fsockopen($hostname, $port);
-    if(!$this->socket) {
-      throw new Exception("Failed to open socket with {$hostname} on port {$port}");
-    }
+  public const TYPE_BACKEND = "ff-backend";
 
-    if(!$this->sendData(
-      self::buildRequest('AUTH', $token)
-    )) {
-      throw new Exception('Failed to send AUTH request');
-    }
+  /**
+  * Arrat of all FF-RPC types. Should be alphanumeric with "-_"
+  */
+  public const TYPES = [
+    self::TYPE_EMAIL,
+    self::TYPE_BACKEND
+  ];
 
-    $authResponse = $this->readToBreak();
-    $nameEnd = strpos($authResponse, ' ');
-    if(!$nameEnd) {
-      throw new Exception('Invalid response');
-    }
+  private $id = 0;
+  private $type = '';
+  private $auth_token = '';
+  private $endpoint = '';
+  private $port = 0;
 
-    $name = substr($authResponse, 0, $nameEnd);
-    $value = substr($authResponse, $nameEnd + 1);
-    if(strtolower($name) !== 'auth') {
-      throw new Exception('Unexpected response');
-    }
+  /**
+  * Fills current instance with FFRPC-data
+  */
+  private function linkByData($data)
+  {
+    foreach ($data as $key => $value) {
+      if(!isset($this->$key)) {
+        throw new Exception('bad data');
+      }
 
-    $response = json_decode($value, true);
-    if($response === false) {
-      throw new Exception('Unauthorized');
+      $this->$key = $value;
     }
   }
 
-	/**
-	* Gets all of the FF-RPC nodes.
-	*/
-	public static function getRpcList()
-	{
-		global $ff_sql;
+  /**
+  * Gets an FFRPC object by its ID.
+  * @return null|ffrpc
+  */
+  public static function getRpcById(int $id)
+  {
+    global $ff_sql;
+
+    $res = $ff_sql->fetch("
+      SELECT *
+      FROM `ff_rpc`
+      WHERE `id` = ". $ff_sql->quote($id) ."
+    ");
+
+    if(!$res) {
+      return null;
+    }
+
+    // creating ffrpc object and returning it with found data
+    $ffrpc = new self();
+    $ffrpc->linkByData($res);
+    return $ffrpc;
+  }
+
+  /**
+  * Gets a random FFRPC obect from its specified type
+  * @param string $type
+  */
+  public static function getRpcByType(string $type)
+  {
+    global $ff_sql;
+
+    if(!in_array($type, self::TYPES)) {
+      return null;
+    }
+
+    $rpcs = $ff_sql->query_fetch_all("
+      SELECT *
+      FROM `ff_rpc`
+      WHERE `type` = ". $ff_sql->quote($type) ."
+    ", [
+      'id' => 'int',
+      'port' => 'int'
+    ]);
+
+    if(!$rpcs) {
+      return null;
+    }
+
+    // random index
+    $rpc = ff_randomArrayIndex($rpcs);
+
+    // creating ffrpc object and returning it with found data
+    $ffrpc = new self();
+    $ffrpc->linkByData($res);
+    return $ffrpc;
+  }
+
+  /**
+  * Returns complete RPC list
+  */
+  public static function getRpcList()
+  {
+    // TODO: Make this with page support in the future.
+    global $ff_sql;
 
 		$result = $ff_sql->query_fetch_all("
 			SELECT *
@@ -83,9 +119,9 @@ class ffrpc
 		]);
 
 		return $result;
-	}
+  }
 
-	/**
+  /**
 	* Creates a new RPC node.
 	*
 	* @param user $user
@@ -97,15 +133,20 @@ class ffrpc
 	* @param int $port
 	*		The port which we use for communicatioms
 	*/
-	public static function createRpcNode(user $user, string $type, string $endpoint, int $port)
-	{
-		global $ff_sql;
-		if(!$user->getGroup()->can('mod_ffrpc')) {
+  public static function createRpc(user $user, string $type, string $endpoint, int $port)
+  {
+    global $ff_sql;
+
+    // Authorization check
+    if(!$user->getGroup()->can('mod_ffrpc')) {
 			return ff_return(false, [], 'misc-permission-denied');
 		}
 
-		$token = cryptography::randomString(128);
-		$result =  $ff_sql->query("
+    // Generating authorization token for the RPC
+    $token = cryptography::randomString(128);
+
+    // Inserting record
+    $result =  $ff_sql->query("
 			INSERT INTO `ff_rpc`
 			(`id`, `type`, `auth_token`, `endpoint`, `port`)
 			VALUES (
@@ -117,223 +158,175 @@ class ffrpc
 			)
 		");
 
-		if($result) {
-			$lastInsertId = $ff_sql->getLastInsertId();
-			audits_admin_newffrpcnode::insert($user, $lastInsertId, $type, $endpoint, $port);
+    if(!$result) {
+      throw new Exception('Failed to create new FFRPC');
+    }
 
-			return ff_return(true, [
-				'id' => $lastInsertId,
-				'token' => $token
-			]);
-		}
-		else {
-			throw new Exception("Failed to create FF-RPC node");
-		}
-	}
+    // Making audit for Administrator
+    $lastInsertId = $ff_sql->getLastInsertId();
+    audits_admin_newffrpcnode::insert($user, $lastInsertId, $type, $endpoint, $port);
 
-	/**
+    // success
+    return ff_return(true, [
+      'id' => $lastInsertId,
+      'token' => $token
+    ]);
+  }
+
+  /**
 	* Deletes a RPC node
 	*
 	* @param user $user
 	*		The person who be deleting
-	* @param int $id
-	*		The ID of the RPC node we want to delete.
+	* @param int|ffrpc $ffrpc
+	*		The ID or FFRPC instance we want to delete.
 	*/
-	public static function deleteRpcNode(user $user, int $id)
-	{
-		global $ff_sql;
-
-		if(!$user->getGroup()->can('mod_ffrpc')) {
-			return ff_return(false, [], 'misc-permission-denied');
-		}
-
-		$rpcNodeInfo = self::getRpcInformation($id);
-		if($rpcNodeInfo) {
-			audits_admin_newffrpcnode::insert($user, $id, $rpcNodeInfo['type'], $rpcNodeInfo['endpoint'], $rpcNodeInfo['port']);
-
-			$ff_sql->query("
-				DELETE FROM `ff_rpc`
-				WHERE `id` = ". $ff_sql->quote($id) ."
-				LIMIT 1
-			");
-
-			return ff_return(true);
-		}
-		else {
-			return ff_return(false, [], 'misc-not-found');
-		}
-	}
-
-	/**
-	* Gets information about a FF-RPC node.
-	*
-	* @param int $id
-	*		The ID of the node we want to fetch information on
-	* @return array|false
-	*/
-	public static function getRpcInformation(int $id)
-	{
-		global $ff_sql;
-		return $ff_sql->query_fetch("
-			SELECT *
-			FROM `ff_rpc`
-			WHERE `id` = ". $ff_sql->quote($id) ."
-		", [
-			'id' => 'int',
-			'port' => 'int'
-		]);
-	}
-
-  /**
-  * Creates a ffrpc object, and auto-fills credentials (port, token, hostname)
-  * with a random index whose type matches $type.
-  *
-  * @param string $type
-  *   The type of RPC connection you want to make.
-  */
-  public static function getRpc(string $type)
+  public static function deleteRpc(user $user, $ffrpc)
   {
     global $ff_sql;
 
-    $RPCs = $ff_sql->query_fetch_all("
-      SELECT `id`, `auth_token`, `endpoint`, `port`
-      FROM `ff_rpc`
-      WHERE `type` = ". $ff_sql->quote($type) ."
-      LIMIT 128
-    ", [
-      'id' => 'int',
-      'port' => 'int'
-    ]);
+    // Authorization check
+    if(!$user->getGroup()->can('mod_ffrpc')) {
+			return ff_return(false, [], 'misc-permission-denied');
+		}
 
-    if(!$RPCs) {
-      throw new Exception('No RPCs linked with the "'. $type .'" type');
+    // getting rpc, depending on the type of $ffrpc
+    $rpc = null;
+    if(get_class($ffrpc) === 'ffrpc') {
+      $rpc = $ffrpc;
+    }
+    else if(is_int($ffrpc)) {
+      $rpc = self::getRpcById($id);
+    }
+    else {
+      throw new Exception('Unexpected type');
     }
 
-    // Selecting random RPC
-    $rndRPC = ff_randomArrayIndex($RPCs);
+    // ensuring rpc is valid.
+    if(!$rpc) {
+      return ff_return(false, [], 'misc-not-found');
+    }
 
-    // Creating FFRpc instance, and returning it.
-    return new ffrpc(
-      $rndRPC['endpoint'],
-      $rndRPC['port'],
-      $rndRPC['auth_token']
+    // Audit log.
+    audits_admin_newffrpcnode::insert(
+      $user,
+      $id,
+      $rpc->getType(),
+      $rpc->getEndpoint(),
+      $rpc->getPort()
     );
+
+    // Deleting the RPC
+    $ff_sql->query("
+      DELETE FROM `ff_rpc`
+      WHERE `id` = ". $ff_sql->quote($rpc->getId()) ."
+      LIMIT 1
+    ");
+
+    return ff_return(true);
   }
 
   /**
-  * Sends a DO request to the remote server.
-  *
-  * @param string $name
-  * @param mixed $parameter
-  *   Parameter, can be anything (except objects.)
+  * Sends a do request to the FF-RPC service.
   */
   public function sendDo(string $name, $parameter)
   {
-    if(is_object($parameter)) {
+    if(!is_array($parameter)) {
       throw new Exception('Unsupported type');
     }
 
-    if(strpos($name, ' ') !== false) {
-      throw new Exception('Name cannot contain spaces.');
+    if(!ff_isAlphanumeric($name)) {
+      throw new Exception('Invalid parameter - $name - expected alphanumeric');
     }
 
-    if(!$this->sendData(
-      self::buildRequest('DO', $name .' '. json_encode($parameter))
-    )) {
-      throw new Exception('Failed to send AUTH request');
+    // Generate HTTP Post data
+    $data = json_encode($parameter);
+
+    // creating and submitting request
+    $ch = curl_init("http://{$this->endpoint}:{$this->port}/$name");
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+      'Content-Type' => 'application/json',
+      'Content-Length' => strlen($data),
+      // NOTE: Authorization used in this way goes against the specification.
+      // not important, but should be noted. There is nothing to spec that is
+      // accepting of tokens. (that i could be bothered researching)
+      'Authorization' => $this->auth_token,
+    ]);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+    // Getting respones
+    $result = curl_exec($ch);
+    $resultStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $resultContentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+    curl_close($ch);
+
+    if($resultStatusCode !== 200) {
+      throw new Exception('FF-RPC Node returned uncessful status');
     }
 
-    $response = $this->readToBreak();
-    $commandPos = strpos($response, ' ');
-    if(!$commandPos) {
-      throw new Exception('unexpectted response');
+    if($resultContentType === 'application/json') {
+      return json_decode($result, true);
     }
-
-    $command = substr($response, 0, $commandPos);
-    $parameter = substr($response, $commandPos + 1);
-    $parameterParsed = json_decode($parameter, true);
-
-    if(strtolower($command) !== 'do') {
-      if($command === '-') {
-        // Error command
-        throw new Exception($parameterParsed);
-      }
-      throw new Exception('unexpectted response');
+    else if($resultContentType === 'application/x-www-form-urlencoded') {
+      // why do you do this php. We hate you.
+      $parsedString = [];
+      parse_str($result, $parsedString);
+      return $parsedString;
     }
-
-    return $parameterParsed;
+    else {
+      // no known content type? assume plain text.
+      return $result;
+    }
   }
 
+  /**
+  * Alias of ffrpc::sendDo.
+  */
   public function do(string $name, $parameter)
   {
     return $this->sendDo($name, $parameter);
   }
 
-	/**
-	* Closes socket
-	*/
-	public function close()
-	{
-		try {
-			socket_close($this->socket);
-			return true;
-		}
-		catch (Exception $ex) {
-			return false;
-		}
-	}
-
-  private function sendData($data)
+  /**
+  * Returns ID associated with object
+  */
+  public function getId()
   {
-    // Appending "<CRLF><CRLF>" to data.
-    $data .= self::CRLF . self::CRLF;
-
-    // Building packets
-    $packets = [];
-    if(mb_strlen($data) > self::CHUNK_SIZE) {
-      $packets = str_split($data, self::CHUNK_SIZE);
-    }
-    else {
-      $packets = [$data];
-    }
-
-    foreach ($packets as $packet) {
-      if(!fwrite($this->socket, $packet, self::CHUNK_SIZE)) {
-        return false;
-      }
-    }
-
-    return true;
+    return $this->id;
   }
 
   /**
-  * Reads as much content as it can (until server says to stop)
+  * Returns type associated with object
   */
-  private function readToBreak()
+  public function getType()
   {
-    $ret = '';
-
-    while($ret .= fgets($this->socket, self::CHUNK_SIZE)) {
-      if(strpos($ret, self::CRLF . self::CRLF) !== false) {
-        break;
-      }
-    }
-
-    // Returning the received response, but removing the end of message
-    // indication.
-    return substr($ret, 0, -4);
+    return $this->type;
   }
 
-  private static function buildRequest($name, string $data = '')
+  /**
+  * Returns authentication token associated with object
+  */
+  public function getAuthToken()
   {
-    if(strlen($data) === 0) {
-      // "$name"
-      return strtoupper($name);
-    }
-    else if(is_string($data)) {
-      // "$name $data"
-      return strtoupper($name) .' '. $data;
-    }
-    throw new Exception('Data parameter must be string');
+    return $this->auth_token;
   }
+
+  /**
+  * Returns endpoint associated with object
+  */
+  public function getEndpoint()
+  {
+    return $this->endpoint;
+  }
+
+  /**
+  * Returns port associated with object
+  */
+  public function getPort()
+  {
+    return $this->port;
+  }
+
 }

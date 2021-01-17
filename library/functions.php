@@ -769,3 +769,13 @@ function ff_concat()
 	}
 	return $ret;
 }
+
+/**
+* Checks if a string is completely Alpha-Numeric, also including underscores
+* and hyphens
+* @param string $s
+*/
+function ff_isAlphanumeric($s)
+{
+	return preg_match('/[^a-z_\-0-9]/i', $s);
+}

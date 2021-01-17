@@ -48,7 +48,7 @@ class post_ffrpcnew extends post_abstract
 			return false;
 		}
 
-		$res = ffrpc::createRpcNode($user, $type, $endpoint, $port);
+		$res = ffrpc::createRpc($user, $type, $endpoint, $port);
 		if($res->success) {
 			$response->redirect($ff_router->getPath('cp_mod_ffrpc_landing', [], [
 				'hash' => "rpc_{$res->data['id']}"

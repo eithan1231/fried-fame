@@ -54,7 +54,15 @@ $ff_response->startOutputBuffer();
 								<div class="input-group-prepend">
 									<span class="input-group-text" style="width: 135px"><?= $language->getPhrase('oneword-type') ?></span>
 								</div>
-								<input name="type" type="text" class="form-control" placeholder="<?= $language->getPhrase('oneword-type') ?>" value="<?= ff_esc($ff_request->get('type')) ?>" autofocus>
+								<select name="type" class="form-control">
+									<?php foreach (ffrpc::TYPES as $type): ?>
+										<?php if ($type === $ff_request->get('type')): ?>
+											<option selected value="<?= ff_esc($type) ?>"><?= ff_esc($type) ?></option>
+										<?php else: ?>
+											<option value="<?= ff_esc($type) ?>"><?= ff_esc($type) ?></option>
+										<?php endif; ?>
+									<?php endforeach; ?>
+								</select>
 							</div>
 
 
