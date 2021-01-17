@@ -67,7 +67,6 @@ User-Agent: *
 <?= $allowRoute('register') ?>
 <?= $allowRoute('recovery') ?>
 <?= $allowRoute('pp') ?>
-<?= $allowRoute('mpgh') ?>
 <?= $allowRoute('mlt') ?>
 <?= $allowRoute('login') ?>
 <?= $allowRoute('credits') ?>
