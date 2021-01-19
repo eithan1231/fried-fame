@@ -28,52 +28,58 @@ class routes_asset extends route
 	];
 
 	/**
-	* Builds the route path (url), strictly the "path" part.
-	*
-	* NOTE: This will get the FIRST path. so if you're returning multiple paths on
-	* the getPaths function, it will assume the first index.
-	*
-	* @param array $parameters
-	*		Parameters for the route.
-	* @return string The route path. IE: /this/is/a/sample
+	* list of extensions that can be minified. Used for the automated minified
+	* check in production
+	*/
+	public const MINABLE_EXTENSIONS = [
+		'js',
+		'css'
+	];
+
+	/**
+	* Overwriting route::buildRoute which will automaitcally generate a route
 	*/
 	public function buildRoute(array $parameters = [])
 	{
 		global $ff_config;
 
+		// set version.
 		$parameters['version'] = FF_VERSION;
+		$parameters['asset'] = ff_stripExtension($parameters['asset']);
 
-		// Adding extension if it's not already added
-		$assetTypeLength = strlen($parameters['extension']);
-		if(substr($parameters['asset'], -$assetTypeLength) !== $parameters['extension']) {
-			$parameters['asset'] .= '.'. $parameters['extension'];
+		// check for minified.
+		if(
+			!ff_isDevelopment() &&
+			self::isMinifiableExtension($parameters['extension'])
+		) {
+			$minifiedAssetName = self::getMinifiedAssetName($parameters['asset']);
+			$minifiedPath = self::getAssetPath($minifiedAssetName, $parameters['extension']);
+
+			if($minifiedPath && file_exists($minifiedPath)) {
+				$parameters['asset'] = $minifiedAssetName;
+			}
 		}
 
+		// adding extension to asset
+		$parameters['asset'] .= ff_concat('.', $parameters['extension']);
+
+		// checking if we are bypassing proxy
 		if($ff_config->get('proxy-asset-bypass')) {
+			$assetPath = ff_stripBad($parameters['asset']);
+			$assetPath = self::applyPathReplacements($assetPath);
 
-			// Generating asset path. usually this is done during the request, but
-			// we have to handle it differently here.
-			$assetPath = urlencode($parameters['asset']);
-			foreach (self::PATH_REPLACEMENTS as $key => $value) {
-				$assetPath = str_replace($key, $value, $assetPath);
-			}
-
-			// "/bypass-assets/{ext}/{asset}"
 			return ff_concat(
 				'/bypass-assets/',
-				urlencode($parameters['extension']),
+				ff_stripBad($parameters['extension']),
 				'/',
 				$assetPath
 			);
 		}
-		else {
-			return parent::buildRoute($parameters);
-		}
+
+		// returning parameters for parent to build
+		return parent::buildRoute($parameters);
 	}
 
-	/**
-	* Gets the paths we want to register with this route.
-	*/
 	public function getPaths()
 	{
 		return [
@@ -84,129 +90,65 @@ class routes_asset extends route
 		];
 	}
 
-	/**
-	* The name of the route.
-	*/
 	public function getName()
 	{
 		return substr(__CLASS__, 7);
 	}
 
-	/**
-	* Whether or not this is a special class.
-	*/
 	public function isSpecial()
 	{
 		return false;
 	}
 
-	/**
-	* Gets the supported http methods.
-	*/
 	public function getMethods()
 	{
 		return ['GET', 'HEAD'];
 	}
 
-	private function getAssetSubdirectory(string $extension)
-	{
-		$extension = str_replace(['.', '/'], '_', $extension);
-		$directory = FF_LIB_DIR . "/assets/{$extension}";
-		if(file_exists($directory)) {
-			return $directory;
-		}
-		return false;
-	}
-
-	private function getETag($filename)
-	{
-		$p = [FF_VERSION, $filename];
-		if(file_exists($filename)) {
-			$p[] = filemtime($filename);
-		}
-
-		return hash(
-			'crc32b',
-			implode('-', $p)
-		);
-	}
-
-	/**
-	* The code to execute the route.
-	*
-	* @param array $parameters
-	*		The parameters of the url.
-	* @param request $request
-	*		The request object.
-	* @param response $response
-	*		The response object.
-	*/
 	public function run(array $parameters, request &$request, response &$response)
 	{
 		global $ff_router;
 
-		if(!isset($parameters['asset'])) {
-			$response->setHttpStatus(404);
-			$response->appendBody('Asset not found');
-			return true;
-		}
-
-		// Checking version
-		if($parameters['version'] !== FF_VERSION) {
-			// Trying to load wrong version, reidrect to newest version. This should
-			// ideally never be called.
-			$response->redirect($ff_router->getPath(
-				$this->getName(),
-				array_merge($parameters, [
-					'version' => FF_VERSION
-				])
-			));
-			return true;
-		}
-
-		$assetsType = ff_stripNonAlphaNumeric($parameters['extension']);
-		$assetDir = $this->getAssetSubdirectory($assetsType);
-		if(!$assetDir) {
+		// makign sure asset is set - if asset is set, everything else is set.
+		if(
+			!isset($parameters['asset']) ||
+			$parameters['version'] !== FF_VERSION
+		) {
 			$response->setHttpStatus(404);
 			return true;
 		}
 
-		$contentType = ff_getExtensionMime($assetsType);
+		$assetExtension = ff_stripNonAlphaNumeric($parameters['extension']);
+		$assetPath = self::getAssetPath($parameters['asset'], $assetExtension);
+		$etag = self::getETag($assetPath);// dislike this here, but we check if file exists - its fine.
+		if(!$assetPath) {
+			$response->setHttpStatus(404);
+			return true;
+		}
+
+		$contentType = ff_getExtensionMime($assetExtension);
 		if(!$contentType) {
 			$response->setHttpStatus(404);
 			return true;
 		}
-		$response->setHttpHeader('Content-Type', $contentType .'; charset='. FF_CHARSET);
 
-		// Getting & cleaning asset & asset path, and getting current etag.
-		$asset = ff_stripBad(strtolower($parameters['asset']));
-
-		// Removing extension, if exists.
-		$assetTypeLength = strlen($assetsType);
-		if(substr($asset, -$assetTypeLength) === $assetsType) {
-			$asset = substr($asset, 0, -$assetTypeLength);
-		}
-
-		// Basically a replacement thing, helps declutter folders
-		foreach (self::PATH_REPLACEMENTS as $key => $value) {
-			$asset = str_replace($key, $value, $asset);
-			//$asset = $value . substr($asset, strlen($key));
-		}
-
-		$assetPath = "{$assetDir}/{$asset}.{$assetsType}";
-		$etag = $this->getETag($assetPath);
-
-		// Setting HTTP response headers.
-		$response->setHttpHeader('Cache-Control', ($request->get('nocache') || ff_isDevelopment()
-			? 'no-cache'
-			: 'max-age='. strval(FF_YEAR * 5)
-		));
+		$response->setHttpHeader('Content-Type', ff_concat($contentType, '; charset=', FF_CHARSET));
 		$response->setHttpHeader('ETag', "\"{$etag}\"");
+
+		// Cache-Control header. No cache is allowed for development, or if the
+		// if the request parameter "nocache" is found
+		if($request->get('nocache') || ff_isDevelopment()) {
+			$response->setHttpHeader('Cache-Control', 'no-cache');
+		}
+		else {
+			$response->setHttpHeader('Cache-Control', 'max-age='. strval(FF_YEAR * 5));
+		}
+
 		if(ff_isDevelopment()) {
 			$response->setHttpHeader('X-Asset-Path', $assetPath);
 		}
 
-		// Check the request etag.
+		// Checking request etag
 		if($ifNoneMatch = $request->getHeader('if-none-match')) {
 			if($ifNoneMatch[0] === '"') {
 				$ifNoneMatch = substr($ifNoneMatch, 1, -1);
@@ -222,6 +164,7 @@ class routes_asset extends route
 			}
 		}
 
+		// sending response
 		if(file_exists($assetPath)) {
 			if(!$response->sendFile($assetPath)) {
 				$response->clearBody();
@@ -236,5 +179,116 @@ class routes_asset extends route
 		}
 
 		return true;
+	}
+
+	/**
+	* Gets asset e-tag for cache validation system.
+	*/
+	private static function getETag($filename)
+	{
+		$options = [FF_VERSION, $filename];
+
+		if(file_exists($filename)) {
+			$options[] = filemtime($filename);
+		}
+
+		return hash(
+			'crc32b',
+			implode('-', $options)
+		);
+	}
+
+	/**
+	* Applies PATH_REPLACEMENTS to a string.
+	*/
+	private static function applyPathReplacements(string $str)
+	{
+		foreach (self::PATH_REPLACEMENTS as $key => $value) {
+			$str = str_replace($key, $value, $str);
+		}
+
+		return $str;
+	}
+
+	/**
+	* Is an extension able to be minified?
+	*/
+	private static function isMinifiableExtension(string $ext)
+	{
+		return in_array($ext, self::MINABLE_EXTENSIONS);
+	}
+
+	/**
+	* Gets the minified version of an asset name
+	*/
+	private static function getMinifiedAssetName(string $assetName)
+	{
+		return "$assetName-min";
+	}
+
+	/**
+	* Gets absolute path to a minified asset from its original name and extension
+	*
+	*/
+	private static function getMinifiedPath(string $assetName, string $assetExtension = null)
+	{
+		// Assuming extension from the asset name
+		if(!$assetExtension) {
+			// getting extension from asset name
+			$assetExtension = ff_getExtension($assetName);
+
+			// now creating asset name.
+			$assetName = ff_stripExtension($assetName);
+			if(!$assetExtension) {
+				throw new Exception('Asset extension is invalid');
+			}
+		}
+
+		return self::getAssetPath(
+			self::getMinifiedAssetName($assetName),
+			$assetExtension
+		);
+	}
+
+	/**
+	* Gets the path of a non-minified asset.
+	*/
+	private static function getAssetPath(string $assetName, string $assetExtension = null)
+	{
+		// Assuming extension from the asset name
+		if(!$assetExtension) {
+			// getting extension from asset name
+			$assetExtension = ff_getExtension($assetName);
+			if(!$assetExtension) {
+				throw new Exception('Asset extension is invalid');
+			}
+		}
+
+		// stripping extension - required, as it re-adds extension at bottom.
+		$assetName = ff_stripExtension($assetName);
+
+		// getting name and directory in which asset is stored.
+		$assetName = ff_stripBad(strtolower($assetName));
+		$assetDirectory = self::getAssetDirectory($assetExtension);
+		if(!$assetName || !$assetDirectory) {
+			return false;
+		}
+
+		$assetName = self::applyPathReplacements($assetName);
+
+		return "$assetDirectory/$assetName.$assetExtension";
+	}
+
+	/**
+	* Gets the directory for specific asset type
+	*/
+	private static function getAssetDirectory(string $extension)
+	{
+		$extension = str_replace(['.', '/'], '_', $extension);
+		$directory = FF_LIB_DIR . "/assets/{$extension}";
+		if(file_exists($directory)) {
+			return $directory;
+		}
+		return false;
 	}
 }

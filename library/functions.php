@@ -121,6 +121,18 @@ function ff_stripExtension($str)
 	if($pos = strrpos($str, '.')) {
 		return substr($str, 0, $pos);
 	}
+	return $str;
+}
+
+/**
+* Gets the extension of a specified file-name
+* @param string $str
+*/
+function ff_getExtension($str)
+{
+	if($pos = strrpos($str, '.')) {
+		return substr($str, $pos + 1);
+	}
 	return $pos;
 }
 
@@ -777,5 +789,5 @@ function ff_concat()
 */
 function ff_isAlphanumeric($s)
 {
-	return preg_match('/[^a-z_\-0-9]/i', $s);
+	return preg_match('/^[a-zA-Z]+[a-zA-Z0-9._]+$/', $s);
 }
