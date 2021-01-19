@@ -24,8 +24,6 @@ payment - thorough testing
 
 cache - reconsider caching structure, perhaps remove mysql caching - objective is to remove weight from mysql database, not add to it - but in some cases, it does.
 
-dependencies - ensure they are up to date and secure. consider migrating to a php package manager.
-
 handlers - unsure about the name 'handlers' for exceptions and errors, maybe consider changing. Feels impropper.
 
 http folder - check if we use this anywhere, if we don't, remove it. We require CURL, which is far more secure.
@@ -43,3 +41,10 @@ Refactor session class - I trust that it works, but sections are poorly written
 and it should be refactored along with the language refactor. There are bad
 parts of the session class due to there being bad parts in language class. (not
 'bad' persay, just not great :p)
+
+Payment
+  - Torough testing
+  - Plan management (add, suspend, edit, etc)
+  - Currency rehaul - Remove currency conversion, realistcally we only need support to change currency prefix.
+
+landing page email sign up button - feels out of place
