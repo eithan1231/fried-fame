@@ -35,13 +35,11 @@ class ffrpc
   */
   private function linkByData($data)
   {
-    foreach ($data as $key => $value) {
-      if(!isset($this->$key)) {
-        throw new Exception('bad data');
-      }
-
-      $this->$key = $value;
-    }
+    $this->id = $data['id'];
+    $this->type = $data['type'];
+    $this->auth_token = $data['auth_token'];
+    $this->endpoint = $data['endpoint'];
+    $this->port = $data['port'];
   }
 
   /**
@@ -98,7 +96,7 @@ class ffrpc
 
     // creating ffrpc object and returning it with found data
     $ffrpc = new self();
-    $ffrpc->linkByData($res);
+    $ffrpc->linkByData($rpc);
     return $ffrpc;
   }
 
@@ -247,12 +245,12 @@ class ffrpc
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-      'Content-Type' => 'application/json',
-      'Content-Length' => strlen($data),
+      'Content-Type: application/json',
+      'Content-Length: '. strlen($data),
       // NOTE: Authorization used in this way goes against the specification.
       // not important, but should be noted. There is nothing to spec that is
       // accepting of tokens. (that i could be bothered researching)
-      'Authorization' => $this->auth_token,
+      'authorization: '. $this->auth_token,
     ]);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
@@ -263,7 +261,7 @@ class ffrpc
     curl_close($ch);
 
     if($resultStatusCode !== 200) {
-      throw new Exception('FF-RPC Node returned uncessful status');
+      throw new Exception('FF-RPC Node returned uncessful status '. $resultStatusCode);
     }
 
     if($resultContentType === 'application/json') {
