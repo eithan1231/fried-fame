@@ -1431,16 +1431,6 @@ class user
 		return settings::getByUserId($this->id);
 	}
 
-	public function getDataUsage()
-	{
-		// As of writing this comment, I added this function as a placeholder
-		// weeks ago... which i cannot recollect... now I got no idea if it is
-		// being called elsewhere... so I'mma just throw this Not Implemented
-		// exception. I  would also expect this function to have some parameters,
-		// as getting a users whole data usage would leak into pervious subscriptions.
-		throw new Exception('Not Implemented');
-	}
-
 	/**
 	* Gets the users active group id
 	* @return int
