@@ -69,7 +69,7 @@ $ff_response->startOutputBuffer();
 		<div id="sidebar-body">
 			<?php snippets_navbar::render(['cp_landing' => 1, 'sidebar' => 1]) ?>
 
-			<div class="container">
+			<div class="container" style="padding-top: 10px">
 				<?php snippets_invalidemail::render() ?>
 
 				<?php if ($announcements && count($announcements) > 0): ?>
