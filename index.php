@@ -227,7 +227,7 @@ $ff_response->setHttpHeader(
 );
 $ff_response->setHttpHeader(
 	'X-Powered-By',
-	'Fried-Fame, a private VPN engine.'
+	'Fried-Fame, an open-source VPN engine.'
 );
 $ff_response->setHttpHeader('X-Alternate-Token', '/watch?v=dQw4w9WgXcQ');
 $ff_response->setHttpHeader('X-Query-Count', $ff_sql->queryCount());
