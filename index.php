@@ -63,6 +63,11 @@ $ff_router->register(new routes_status());
 $ff_router->register(new routes_sitemap());
 $ff_router->register(new routes_faq());
 
+// internal api endpoints
+$ff_router->register(new routes_internalapi_ffrpc_new());
+$ff_router->register(new routes_internalapi_ffrpc_list());
+
+
 // Documentation / Knowledge Base
 $ff_router->register(new routes_knowbase_landing());
 $ff_router->register(new routes_knowbase_category());
@@ -125,6 +130,10 @@ $ff_router->register(new routes_cp_mod_nodes_landing());
 $ff_router->register(new routes_cp_mod_nodes_manage());
 $ff_router->register(new routes_cp_mod_nodes_new());
 $ff_router->register(new routes_cp_mod_review());
+$ff_router->register(new routes_cp_mod_internalapi_new());
+$ff_router->register(new routes_cp_mod_internalapi_list());
+$ff_router->register(new routes_cp_mod_internalapi_edit());
+
 
 // WebContainer automatic detector and redirecter.
 $ff_router->register(new routes_containers_redirect());

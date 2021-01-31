@@ -699,6 +699,14 @@ function ff_censorName(string $name)
 }
 
 /**
+* Censores a token
+*/
+function ff_censorToken(string $token)
+{
+	return substr($token, 0, 6) . '*****...';
+}
+
+/**
 * Builds a page title.
 * @param string $phrase
 *		Name of the title phrase.

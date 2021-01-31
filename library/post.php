@@ -67,6 +67,8 @@ class post
 		$this->postActions[] = new post_deletereview();
 		$this->postActions[] = new post_newnode();
 		$this->postActions[] = new post_newmodsupportpost();
+		$this->postActions[] = new post_internalapinew();
+		$this->postActions[] = new post_internalapiedit();
 	}
 
 	/**

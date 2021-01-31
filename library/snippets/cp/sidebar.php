@@ -138,29 +138,6 @@ class snippets_cp_sidebar implements snippets_snippets
 				<?php endif; ?>
 
 				<?php if ($userGroup->can('mod_*')): ?>
-					<?php if ($userGroup->can('mod_language')): ?>
-						<!-- Language Management -->
-						<div class="row">
-		          <span class="header"><?= $language->getPhrase('oneword-language') ?></span>
-		        </div>
-
-						<div class="row">
-		          <a href="<?= $ff_router->getPath('cp_mod_language_list') ?>" class="text"><?= $language->getPhrase('oneword-list') ?></a>
-		        </div>
-
-						<div class="row">
-		          <a href="<?= $ff_router->getPath('cp_mod_language_new') ?>" class="text"><?= $language->getPhrase('oneword-new') ?></a>
-		        </div>
-
-						<div class="row">
-		          <a href="<?= $ff_router->getPath('cp_mod_language_outdated') ?>" class="text"><?= $language->getPhrase('oneword-outdated') ?></a>
-		        </div>
-
-						<div class="row">
-		          <a href="<?= $ff_router->getPath('cp_mod_language_unfound') ?>" class="text"><?= $language->getPhrase('oneword-unfound') ?></a>
-		        </div>
-					<?php endif; ?>
-
 					<div class="row">
 	          <span class="header"><?= $language->getPhrase('oneword-administration') ?></span>
 	        </div>
@@ -227,6 +204,46 @@ class snippets_cp_sidebar implements snippets_snippets
 						<div class="row">
 							<a href="<?= $ff_router->getPath('cp_mod_package_new') ?>" class="text"><?= $language->getPhrase('misc-new-package') ?></a>
 						</div>
+					<?php endif; ?>
+
+					<?php if ($userGroup->can('mod_language')): ?>
+						<!-- Language Management -->
+						<div class="row">
+		          <span class="header"><?= $language->getPhrase('oneword-language') ?></span>
+		        </div>
+
+						<div class="row">
+		          <a href="<?= $ff_router->getPath('cp_mod_language_list') ?>" class="text"><?= $language->getPhrase('oneword-list') ?></a>
+		        </div>
+
+						<div class="row">
+		          <a href="<?= $ff_router->getPath('cp_mod_language_new') ?>" class="text"><?= $language->getPhrase('oneword-new') ?></a>
+		        </div>
+
+						<div class="row">
+		          <a href="<?= $ff_router->getPath('cp_mod_language_outdated') ?>" class="text"><?= $language->getPhrase('oneword-outdated') ?></a>
+		        </div>
+
+						<div class="row">
+		          <a href="<?= $ff_router->getPath('cp_mod_language_unfound') ?>" class="text"><?= $language->getPhrase('oneword-unfound') ?></a>
+		        </div>
+					<?php endif; ?>
+
+					<?php if ($userGroup->can('mod_internalapi')): ?>
+						<!-- Internal API Management -->
+						<div class="row">
+		          <span class="header"><?= $language->getPhrase('oneword-internalapi') ?></span>
+		        </div>
+
+						<?php if (!internalapi::isInternalAPIListEmpty()): ?>
+							<div class="row">
+								<a href="<?= $ff_router->getPath('cp_mod_internalapi_list') ?>" class="text"><?= $language->getPhrase('oneword-list') ?></a>
+							</div>
+						<?php endif; ?>
+
+						<div class="row">
+							<a href="<?= $ff_router->getPath('cp_mod_internalapi_new') ?>" class="text"><?= $language->getPhrase('oneword-new') ?></a>
+		        </div>
 					<?php endif; ?>
 
 				<?php endif; ?>
