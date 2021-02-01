@@ -97,6 +97,7 @@ class audit
 				`admin_audit_logs`.`id` AS id,
 				`admin_audit_logs`.`user_id`,
 				`users`.`username` AS user_name,
+				`users`.`id` AS user_id,
 				`users`.`group_id` AS user_group_id,
 				`admin_audit_logs`.`date` AS date,
 				`admin_audit_logs`.`name` AS name,
@@ -121,7 +122,7 @@ class audit
       return false;
     }
 
-		if(!isset($filter['above_id']) || !$filter['above_id']) {
+		if(isset($filter['above_id']) && $filter['above_id']) {
 			// putting order as it should be.
 			$res = array_reverse($res);
 		}

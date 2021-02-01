@@ -16,6 +16,9 @@
 global $ff_request, $ff_response, $ff_context, $ff_config, $ff_router;
 $ff_response->setHttpHeader('Content-Type', 'text/html');
 
+$activeUser = $ff_context->getSession()->getActiveLinkUser();
+$activeUserGroup = $activeUser->getGroup();
+
 // The user whose audit history we are getting.
 $auditHistoryUser;
 
@@ -139,7 +142,15 @@ $ff_response->startOutputBuffer();
 									</td>
 
 									<td>
-										<?= ff_esc($audit['user_name']) ?>
+										<?php if ($activeUserGroup->can('mod_users')): ?>
+											<a href="<?= $ff_router->getPath('cp_mod_user_manage', [], [
+												'query' => [
+													'user' => $audit['user_id']
+												]
+											]) ?>"><?= ff_esc($audit['user_name']) ?></a>
+										<?php else: ?>
+											<?= ff_esc($audit['user_name']) ?>
+										<?php endif; ?>
 									</td>
 
 									<td>
