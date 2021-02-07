@@ -75,13 +75,6 @@ class snippets_footer implements snippets_snippets
 			            <a href="<?= $ff_router->getPath('status') ?>"><?= $language->getPhrase('oneword-status-page') ?></a>
 			          </li>
 							<?php endif; ?>
-
-		          <li>
-		            <a href="#!">Link 3</a>
-		          </li>
-		          <li>
-		            <a href="#!">Link 4</a>
-		          </li>
 		        </ul>
 		      </div>
 
