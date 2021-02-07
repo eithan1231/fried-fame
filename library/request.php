@@ -364,28 +364,26 @@ class request
 	/**
 	* Checks that this request is valid.
 	*/
-	public function check(&$error = [])
+	public function check()
 	{
 		global $ff_response, $ff_config, $ff_sql;
 
+		$ret = [];
+
 		if($this->isFromCommandLine) {
 			// From command line, we can assume yes.
-			return true;
+			return $ret;
 		}
 
-		$ret = true;
-
 		if(!function_exists('curl_init')) {
-			$error[] = 'curl';
-			$ret = false;
+			$ret[] = 'curl';
 		}
 
 		if(!ff_isDevelopment()) {
 			$hostHeader = strtolower(ff_stripEndingBlanks($this->getHeader('host')));
 			$trustedHosts = $ff_config->get('trusted-hostnames');
 			if(!in_array($hostHeader, $trustedHosts)) {
-				$ret = false;
-				$error[] = 'hostname';
+				$ret[] = 'hostname';
 			}
 		}
 

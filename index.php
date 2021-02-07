@@ -134,7 +134,6 @@ $ff_router->register(new routes_cp_mod_internalapi_new());
 $ff_router->register(new routes_cp_mod_internalapi_list());
 $ff_router->register(new routes_cp_mod_internalapi_edit());
 
-
 // WebContainer automatic detector and redirecter.
 $ff_router->register(new routes_containers_redirect());
 
@@ -160,74 +159,73 @@ $ff_router->register(new routes_containers_nixnative_api_heartbeet());
 $ff_router->register(new routes_containers_nixnative_api_authenticate());
 $ff_router->register(new routes_containers_nixnative_api_openvpnconfig());
 
-
 // Payments
 $ff_router->register(new routes_payments_gateways_paypal_ipn());
 $ff_router->register(new routes_payments_gateways_paypal_redirect());
 
-
-// Running appropriate route.
 if($ff_sql->connect()) {
+	// Creating FF context (requires MySQL)
 	$ff_context = new context();
 
-	if($ff_request->check($errors)) {
-		$hostnameRedirects = $ff_config->get('hostname-redirects');
-		if(isset($hostnameRedirects[$ff_request->getHeader('host')])) {
-			// Domain name redirect.
-			$newHostname = $hostnameRedirects[$ff_request->getHeader('host')];
+	// At the end of this block of code, we may not want to run the router, as
+	// we may be printing output without it.
+	$runRouter = true;
 
-			// Generating new redirect url
-			$redirectPath = "//{$newHostname}{$ff_request->getPath()}";
-			if(strlen($ff_request->getQuery()) > 0) {
-				$redirectPath .= '?'. $ff_request->getQuery();
-			}
-
-			// Redirecting
-			$ff_response->redirect($redirectPath);
-		}
-		else if(
-			$ff_config->get('secure-server') &&
-			$ff_request->getHeader('upgrade-insecure-requests') == '1' &&
-			!$ff_request->isSecure()
-		) {
-			// Upgrade to HTTPS
-
-			// Some might be worried about the 'host' header, as it is forgable.. Don't
-			// stress; it is validated with a whitelist. As for query, and path.. they
-			$redirectPath = "https://{$ff_request->getHeader('host')}{$ff_request->getPath()}";
-			if(strlen($ff_request->getQuery()) > 0) {
-				$redirectPath .= '?'. $ff_request->getQuery();
-			}
-
-			$ff_response->redirect($redirectPath);
-		}
-		else {
-			$ff_router->run();
-		}
-	}
-	else {
-		foreach($errors as $key => $value) {
-			$ff_response->setHttpHeader(
-				'X-Error-'. $key,
-				$value
-			);
-		}
+	// Check errors
+	$errors = $ff_request->check();
+	if(count($errors) > 0) {
+		$runRouter = false;
 		$ff_response->setHttpStatus(400);
 		$ff_response->setHttpHeader('Content-type', 'text/plain');
+
+		$ff_response->appendBody('Errors Experienced:');
+		foreach ($errors as $error) {
+			$ff_response->appendBody("\n$error");
+
+			// Log error to log file
+			$ff_context->getLogger()->error("Error: $error", $error);
+		}
+	}
+
+	// HTTP Upgrade
+	if(
+		$ff_config->get('secure-server') &&
+		$ff_request->getHeader('upgrade-insecure-requests') == '1' &&
+		!$ff_request->isSecure()
+	) {
+		$runRouter = false;
+
+		$redirectPath = "https://{$ff_request->getHeader('host')}{$ff_request->getPath()}";
+		if(strlen($ff_request->getQuery()) > 0) {
+			$redirectPath .= '?'. $ff_request->getQuery();
+		}
+
+		$ff_response->redirect($redirectPath);
+	}
+
+	// Hostname redirect
+	$hostnameRedirects = $ff_config->get('hostname-redirects');
+	$httpHostHeader = $ff_request->getHeader('host');
+	if(isset($hostnameRedirects[$httpHostHeader])) {
+		$runRouter = false;
+
+		$redirectPath = "//{$hostnameRedirects[$httpHostHeader]}{$ff_request->getPath()}";
+		if($ff_request->getQuery()) {
+			$redirectPath .= '?'. $ff_request->getQuery();
+		}
+
+		$ff_response->redirect($redirectPath);
+	}
+
+	// run routes.
+	if ($runRouter) {
+		$ff_router->run();
 	}
 }
-else {
-	$ff_router->runSpecial('db');
-}
-
 
 // Finishing off the response.
 $ff_response->setHttpHeader(
 	'X-Memory-Usage',
-	ff_getSizeAsVisual(memory_get_usage())
-);
-$ff_response->setHttpHeader(
-	'X-Memory-Peak-Usage',
 	ff_getSizeAsVisual(memory_get_peak_usage())
 );
 $ff_response->setHttpHeader(
@@ -236,12 +234,9 @@ $ff_response->setHttpHeader(
 );
 $ff_response->setHttpHeader(
 	'X-Powered-By',
-	'Fried-Fame, an open-source VPN engine.'
+	'github:eithan1231/fried-fame'
 );
-$ff_response->setHttpHeader('X-Alternate-Token', '/watch?v=dQw4w9WgXcQ');
 $ff_response->setHttpHeader('X-Query-Count', $ff_sql->queryCount());
-$ff_response->setHttpHeader('Server', 'Fried-Fame');
-$ff_response->setHttpHeader('X-Fried-Fame-Version', strval(FF_VERSION));
 $ff_response->setHttpHeader('X-UA-Compatible', 'IE=edge');
 $ff_response->setHttpHeader('X-Frame-Options', 'sameorigin');
 $ff_response->setHttpHeader('X-Request-Id', FF_REQUEST_ID);
