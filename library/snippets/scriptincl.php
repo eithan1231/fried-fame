@@ -55,7 +55,7 @@ class snippets_scriptincl implements snippets_snippets
 			<script type="text/javascript">
 				(function() {
 					// Enter a debug mode for all moderators.
-					window.addEventlistener('load', ff_config.enterDebug);
+					window.addEventListener('load', ff_config.enterDebug);
 				})();
 			</script>
 
