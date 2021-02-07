@@ -43,12 +43,20 @@ class handlers_exception
       // Stopping loop.
     }
 
+		// Attempting to push error email to administration
 		try {
-			if(isset($ff_config) && isset($ff_response) && isset($ff_sql) && $ff_sql != null && $ff_sql->ping()) {
+			if(
+				isset($ff_config) &&
+				isset($ff_response) &&
+				isset($ff_sql) &&
+				$ff_sql != null &&
+				$ff_sql->ping()
+			) {
         $emailBuilder = new email_builder();
         $emailBuilder->setSubject($ff_config->get('project-name') .' Unhandled Exception');
         $emailBuilder->setBody($ex->__toString());
         $addresses = array_map('ff_stripEndingBlanks', explode(',', $ff_config->get('error-pushing-addresses')));
+
         if(count($addresses) > 0) {
           foreach($addresses as $address) {
             $emailBuilder->setRecipient($address);
@@ -62,33 +70,24 @@ class handlers_exception
 		}
 
 		try {
-      if(gettype($ex) === 'object' && get_class($ex) == 'mysqli_sql_exception') {
-  			if(isset($ff_response)) {
-  				$ff_response->clearBody();
-  				ff_renderView('special/db');
-  				$ff_response->flush();
-  			}
-  		}
-  		else {
-  			if(isset($ff_response)) {
-  	      $ff_response->setHttpStatus(500);
-  	      if(ff_isDevelopment()) {
-  					$ff_response->setHeader("Content-type", "text/plain");
-  					$ff_response->clearBody();
-  					var_dump($ex);
-  				}
-  				else{
-  					$ff_response->clearBody();
-  	      }
-  	      $ff_response->flush();
-  	    }
-  	    else if(!headers_sent()) {
-  	      header('HTTP/1.1 500 Internal Error');
-  				if(ff_isDevelopment()) {
-  					var_dump($ex);
-  				}
-  	    }
-  		}
+			if(isset($ff_response)) {
+				$ff_response->setHttpStatus(500);
+				if(ff_isDevelopment()) {
+					$ff_response->setHeader("Content-type", "text/plain");
+					$ff_response->clearBody();
+					var_dump($ex);
+				}
+				else{
+					$ff_response->clearBody();
+				}
+				$ff_response->flush();
+			}
+			else if(!headers_sent()) {
+				header('HTTP/1.1 500 Internal Error');
+				if(ff_isDevelopment()) {
+					var_dump($ex);
+				}
+			}
 
       if(isset($ff_context)) {
         if($ff_context->getLogger()) {
