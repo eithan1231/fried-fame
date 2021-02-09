@@ -19,7 +19,7 @@ define('FF_DEVELOPMENT', (isset($_SERVER['FF_DEVELOPMENT']) && $_SERVER['FF_DEVE
 
 define('FF_WORK_DIR', __DIR__);
 define('FF_LIB_DIR', FF_WORK_DIR .'/library');
-define('FF_UPLOAD_DIR', FF_WORK_DIR .'/library/uploads');
+define('FF_UPLOAD_DIR', FF_WORK_DIR .'/uploads');
 define('FF_ERR_DIR', FF_WORK_DIR .'/errors');// Directory errors are logged
 define('FF_LOG_DIR', FF_WORK_DIR .'/logs');// Directory logs are stored
 define('FF_CHARSET', ini_get("default_charset"));

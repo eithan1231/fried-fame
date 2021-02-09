@@ -51,9 +51,17 @@ $ff_response->startOutputBuffer();
 
 							<div class="input-group mb-3">
 								<div class="input-group-prepend">
-									<span class="input-group-text" style="width: 135px"><?= ff_esc($language->getPhrase('oneword-platform')) ?></span>
+									<span class="input-group-text" style="width: 135px"><?= $language->getPhrase('oneword-platform') ?></span>
 								</div>
-								<input name="platform" type="text" class="form-control" placeholder="<?= ff_esc($language->getPhrase('oneword-platform')) ?>" autofocus>
+								<select name="platform" class="form-control">
+									<?php foreach (packages::PLATFORMS as $platform): ?>
+										<?php if ($platform === $ff_request->get('platform')): ?>
+											<option selected value="<?= ff_esc($platform) ?>"><?= ff_esc($platform) ?></option>
+										<?php else: ?>
+											<option value="<?= ff_esc($platform) ?>"><?= ff_esc($platform) ?></option>
+										<?php endif; ?>
+									<?php endforeach; ?>
+								</select>
 							</div>
 
 							<div class="input-group mb-3">

@@ -17,10 +17,15 @@ class packages
 {
 	/**
 	* Platform for windows.
-	* NOTE: When user uploads update for windows, he could spell it wrong. This is
-	* just for internal purposes, and we got no control over the users input.
 	*/
-	const PLATFORM_WINDOWS = 'Windows';
+	public const PLATFORM_WINDOWS = 'Windows';
+
+	/**
+	* Array of all package platforms
+	*/
+	public const PLATFORMS = [
+		self::PLATFORM_WINDOWS
+	];
 
 	/**
 	* Uploads a package
@@ -41,6 +46,10 @@ class packages
 		global $ff_sql;
 		if(!$user->getGroup()->can('mod_packages')) {
 			return ff_return(false, 'misc-permission-denied');
+		}
+
+		if(!in_array($platform, self::PLATFORMS)) {
+			return ff_return(false, 'misc-bad-platform');
 		}
 
 		$uploadedPath = uploads::upload(__CLASS__, $filename, $tempLocation, FF_TIME .":{$platform}:{$version}");
@@ -143,6 +152,10 @@ class packages
 	*/
 	public static function getPlatformMostRecent(string $platform)
 	{
+		if(!in_array($platform, self::PLATFORMS)) {
+			return null;
+		}
+
 		global $ff_sql;
 		return $ff_sql->fetch("
 			SELECT *
@@ -164,6 +177,10 @@ class packages
 	*/
 	public static function getPlatformPackages(string $platform)
 	{
+		if(!in_array($platform, self::PLATFORMS)) {
+			return null;
+		}
+
 		global $ff_sql;
 		return $ff_sql->fetch_all("
 			SELECT *
