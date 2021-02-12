@@ -119,6 +119,28 @@ class ffrpc
 		return $result;
   }
 
+	/**
+  * Returns complete RPC list
+  */
+  public static function getRpcListByType(string $type)
+  {
+    // TODO: Make this with page support in the future.
+    global $ff_sql;
+
+		$result = $ff_sql->query_fetch_all("
+			SELECT *
+			FROM
+				`ff_rpc`
+			WHERE
+				`type` = ". $ff_sql->quote($type) ."
+		", [
+			'id' => 'int',
+			'port' => 'int'
+		]);
+
+		return $result;
+  }
+
   /**
 	* Creates a new RPC node.
 	*

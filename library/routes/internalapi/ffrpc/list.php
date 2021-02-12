@@ -55,9 +55,12 @@ class routes_internalapi_ffrpc_list extends routes_internalapi_abstract
 	*/
 	protected function runAPI(request &$request, response &$response)
 	{
-    $rpcList = ffrpc::getRpcList();
+		$rpcList = (is_string($request->get('type'))
+			? ffrpc::getRpcListByType($request->get('type'))
+			: ffrpc::getRpcList()
+		);
 
-    $response->json($rpcList);
+		$response->json($rpcList);
 
 		return true;
 	}
