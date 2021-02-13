@@ -127,6 +127,10 @@ class ffrpc
     // TODO: Make this with page support in the future.
     global $ff_sql;
 
+		if(!in_array($type, self::TYPES)) {
+      return null;
+    }
+
 		$result = $ff_sql->query_fetch_all("
 			SELECT *
 			FROM
