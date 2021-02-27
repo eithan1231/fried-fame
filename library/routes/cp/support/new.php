@@ -29,10 +29,7 @@ class routes_cp_support_new extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/support/new/',
-			'/control-panel/support/new',
-      '/usercp/support/new',
-      '/usercp/support/new/',
+			'/control-panel/support/new/'
     ];
 	}
 

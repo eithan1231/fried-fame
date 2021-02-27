@@ -29,8 +29,7 @@ class routes_cp_review extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/review',
-			'/usercp/review',
+			'/control-panel/review'
     ];
 	}
 

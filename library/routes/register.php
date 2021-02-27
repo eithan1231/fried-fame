@@ -29,12 +29,7 @@ class routes_register extends route
 	public function getPaths()
 	{
 		return [
-			'/register',
-			'/register/',
-			'/registration/',
-			'/registration',
-			'/profile/register',
-			'/profile/register/',
+			'/register'
 		];
 	}
 

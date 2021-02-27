@@ -29,8 +29,7 @@ class routes_cp_mod_language_outdated extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/language/outdated',
-			'/usercp/moderator/language/outdated/',
+      '/usercp/moderator/language/outdated'
     ];
 	}
 

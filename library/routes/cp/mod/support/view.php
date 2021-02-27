@@ -29,8 +29,7 @@ class routes_cp_mod_support_view extends route
 	public function getPaths()
 	{
 		return [
-			'/usercp/moderator/support/{int:id}',
-			'/usercp/moderator/support/{int:id}/',
+			'/usercp/moderator/support/{int:id}'
     ];
 	}
 

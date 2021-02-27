@@ -29,10 +29,7 @@ class routes_pp extends route
 	public function getPaths()
 	{
 		return [
-			'/privacy-policy',
-      '/privacy-policy/',
-      '/pp',
-      '/pp/',
+			'/privacy-policy'
 		];
 	}
 

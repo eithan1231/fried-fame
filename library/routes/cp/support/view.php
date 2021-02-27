@@ -29,10 +29,7 @@ class routes_cp_support_view extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/support/{string:id-subject}/',
-			'/control-panel/support/{string:id-subject}',
-      '/usercp/support/{string:id-subject}',
-      '/usercp/support/{string:id-subject}/',
+			'/control-panel/support/{string:id-subject}/'
     ];
 	}
 

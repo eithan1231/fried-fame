@@ -29,8 +29,7 @@ class routes_post extends route
 	public function getPaths()
 	{
 		return [
-			'/post/{security_token}/{action}',
-			'/post/{security_token}/{action}/'
+			'/post/{security_token}/{action}'
 		];
 	}
 

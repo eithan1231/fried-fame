@@ -29,8 +29,7 @@ class routes_emailverif extends route
 	public function getPaths()
 	{
 		return [
-      '/email-verification/{token}/{user_id}',
-      '/email-verification/{token}/{user_id}/',
+      '/email-verification/{token}/{user_id}'
 		];
 	}
 

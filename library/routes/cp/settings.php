@@ -29,10 +29,7 @@ class routes_cp_settings extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/settings/',
-			'/control-panel/settings',
-			'/usercp/settings/',
-      '/usercp/settings',
+			'/control-panel/settings/'
     ];
 	}
 

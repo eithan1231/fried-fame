@@ -29,8 +29,7 @@ class routes_cp_mod_language_new extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/language/new',
-			'/usercp/moderator/language/new/',
+      '/usercp/moderator/language/new'
     ];
 	}
 

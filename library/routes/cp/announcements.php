@@ -29,8 +29,7 @@ class routes_cp_announcements extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/announcements',
-      '/usercp/announcements',
+			'/control-panel/announcements'
 		];
 	}
 

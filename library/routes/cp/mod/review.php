@@ -29,8 +29,7 @@ class routes_cp_mod_review extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/review',
-      '/usercp/moderator/review/',
+      '/usercp/moderator/review'
     ];
 	}
 

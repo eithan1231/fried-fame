@@ -29,8 +29,7 @@ class routes_cp_mod_announcement extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/announcement',
-      '/usercp/moderator/announcement/',
+      '/usercp/moderator/announcement'
     ];
 	}
 

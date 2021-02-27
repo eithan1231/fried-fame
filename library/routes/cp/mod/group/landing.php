@@ -29,8 +29,7 @@ class routes_cp_mod_group_landing extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/group',
-      '/usercp/moderator/group/',
+      '/usercp/moderator/group/'
     ];
 	}
 

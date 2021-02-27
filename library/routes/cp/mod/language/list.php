@@ -29,10 +29,7 @@ class routes_cp_mod_language_list extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/language/list',
-			'/usercp/moderator/language/list/',
-			'/usercp/moderator/language',
-			'/usercp/moderator/language/',
+      '/usercp/moderator/language/list'
     ];
 	}
 

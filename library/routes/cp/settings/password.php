@@ -29,10 +29,7 @@ class routes_cp_settings_password extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/settings/password',
-			'/control-panel/settings/password/',
-      '/usercp/settings/password',
-      '/usercp/settings/password/',
+			'/control-panel/settings/password'
     ];
 	}
 

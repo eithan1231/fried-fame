@@ -29,8 +29,7 @@ class routes_cp_mod_audit extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/audit',
-      '/usercp/moderator/audit/',
+      '/usercp/moderator/audit'
     ];
 	}
 

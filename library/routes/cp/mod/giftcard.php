@@ -29,8 +29,7 @@ class routes_cp_mod_giftcard extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/giftcard',
-      '/usercp/moderator/giftcard/',
+      '/usercp/moderator/giftcard'
     ];
 	}
 

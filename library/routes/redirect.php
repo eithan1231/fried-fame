@@ -32,8 +32,7 @@ class routes_redirect extends route
 	public function getPaths()
 	{
 		return [
-			'/redirect/{string:type}',
-			'/redirect/{string:type}/',
+			'/redirect/{string:type}'
 		];
 	}
 

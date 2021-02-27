@@ -29,8 +29,7 @@ class routes_cp_mod_feedback extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/feedback',
-      '/usercp/moderator/feedback/',
+      '/usercp/moderator/feedback'
     ];
 	}
 

@@ -29,8 +29,7 @@ class routes_cp_mod_ffrpc_new extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/ffrpc/new',
-      '/usercp/moderator/ffrpc/new/',
+      '/usercp/moderator/ffrpc/new'
     ];
 	}
 

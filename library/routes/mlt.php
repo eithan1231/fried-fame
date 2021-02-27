@@ -32,10 +32,7 @@ class routes_mlt extends route
 	public function getPaths()
 	{
 		return [
-			'/mailing-list-terms',
-      '/mailing-list-terms/',
-      '/mlt',
-      '/mlt/',
+			'/mailing-list-terms'
 		];
 	}
 

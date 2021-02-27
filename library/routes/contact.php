@@ -32,8 +32,7 @@ class routes_contact extends route
 	public function getPaths()
 	{
 		return [
-			'/contact-us',
-			'/contact-us/',
+			'/contact-us'
 		];
 	}
 

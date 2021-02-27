@@ -29,8 +29,7 @@ class routes_cp_mod_user_find extends route
 	public function getPaths()
 	{
 		return [
-			'/usercp/moderator/user/find',
-			'/usercp/moderator/user/find/',
+			'/usercp/moderator/user/find'
     ];
 	}
 

@@ -29,10 +29,7 @@ class routes_cp_giftcard extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/giftcard',
-			'/control-panel/giftcard/',
-			'/usercp/giftcard',
-			'/usercp/giftcard/',
+			'/control-panel/giftcard'
 		];
 	}
 

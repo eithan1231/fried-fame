@@ -29,10 +29,7 @@ class routes_cp_settings_email extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/settings/email',
-			'/control-panel/settings/email/',
-      '/usercp/settings/email',
-      '/usercp/settings/email/',
+			'/control-panel/settings/email'
     ];
 	}
 

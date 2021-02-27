@@ -29,10 +29,7 @@ class routes_recovery extends route
 	public function getPaths()
 	{
 		return [
-			'/recovery',
-			'/recovery/',
-			'/profile/recovery',
-			'/profile/recovery/',
+			'/recovery'
 		];
 	}
 

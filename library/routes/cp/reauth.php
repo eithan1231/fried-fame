@@ -29,10 +29,7 @@ class routes_cp_reauth extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/re-authenticate',
-			'/control-panel/re-authenticate/',
-			'/usercp/reauth',
-			'/usercp/reauth/',
+			'/control-panel/re-authenticate'
 		];
 	}
 

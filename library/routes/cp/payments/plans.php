@@ -29,8 +29,7 @@ class routes_cp_payments_plans extends route
 	public function getPaths()
 	{
 		return [
-			'/payments/plans',
-			'/payments/plans/',
+			'/payments/plans'
     ];
 	}
 

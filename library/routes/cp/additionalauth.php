@@ -29,10 +29,7 @@ class routes_cp_additionalauth extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/additionalauth',
-      '/control-panel/additionalauth/',
-			'/usercp/additionalauth',
-      '/usercp/additionalauth/',
+			'/control-panel/additionalauth'
     ];
 	}
 

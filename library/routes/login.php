@@ -29,10 +29,7 @@ class routes_login extends route
 	public function getPaths()
 	{
 		return [
-			'/login',
-			'/login/',
-			'/profile/login',
-			'/profile/login/',
+			'/login'
 		];
 	}
 

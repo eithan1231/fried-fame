@@ -29,8 +29,7 @@ class routes_cp_mod_language_unfound extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/language/unfound',
-			'/usercp/moderator/language/unfound/',
+      '/usercp/moderator/language/unfound'
     ];
 	}
 

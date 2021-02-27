@@ -29,10 +29,7 @@ class routes_tos extends route
 	public function getPaths()
 	{
 		return [
-			'/terms-of-service',
-			'/terms-of-service/',
-			'/tos',
-			'/tos/'
+			'/terms-of-service'
 		];
 	}
 

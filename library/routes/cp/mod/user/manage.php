@@ -29,8 +29,7 @@ class routes_cp_mod_user_manage extends route
 	public function getPaths()
 	{
 		return [
-			'/usercp/moderator/user/manage',
-			'/usercp/moderator/user/manage/',
+			'/usercp/moderator/user/manage'
     ];
 	}
 

@@ -29,8 +29,7 @@ class routes_cp_mod_ffrpc_landing extends route
 	public function getPaths()
 	{
 		return [
-      '/usercp/moderator/ffrpc',
-      '/usercp/moderator/ffrpc/',
+      '/usercp/moderator/ffrpc/'
     ];
 	}
 

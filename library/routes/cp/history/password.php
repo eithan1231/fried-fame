@@ -29,10 +29,7 @@ class routes_cp_history_password extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/history/password',
-			'/control-panel/history/password/',
-      '/usercp/history/password',
-      '/usercp/history/password/',
+			'/control-panel/history/password'
     ];
 	}
 

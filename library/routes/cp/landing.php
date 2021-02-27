@@ -29,10 +29,7 @@ class routes_cp_landing extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel',
-      '/control-panel/',
-			'/usercp',
-      '/usercp/',
+			'/control-panel/'
 		];
 	}
 

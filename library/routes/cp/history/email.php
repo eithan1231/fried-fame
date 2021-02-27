@@ -29,10 +29,7 @@ class routes_cp_history_email extends route
 	public function getPaths()
 	{
 		return [
-			'/control-panel/history/email',
-			'/control-panel/history/email/',
-      '/usercp/history/email',
-      '/usercp/history/email/',
+			'/control-panel/history/email'
     ];
 	}
 

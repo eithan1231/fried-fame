@@ -29,10 +29,7 @@ class routes_faq extends route
 	public function getPaths()
 	{
 		return [
-      '/frequently-asked-questions',
-      '/frequently-asked-questions/',
-      '/faq',
-      '/faq/',
+      '/frequently-asked-questions'
 		];
 	}
 
