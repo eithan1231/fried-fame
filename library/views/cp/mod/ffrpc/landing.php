@@ -39,12 +39,35 @@ $ff_response->startOutputBuffer();
 		<?php snippets_cssincl::render() ?>
 		<?php snippets_htmlheader::render() ?>
 		<?php snippets_altlang::render() ?>
+		<script type="text/javascript">
+			// Most scripts go in ff_custom and are deferred, but this is locanized to
+			// this function so it should be okay.
+			function updateModal(elem) {
+				document.getElementById('auth-token-modal-text').innerHTML = elem.dataset.token;
+			}
+		</script>
 	</head>
 	<body>
 		<?php snippets_cp_sidebar::render() ?>
 
 		<div id="sidebar-body">
 			<?php snippets_navbar::render(['cp_landing' => 1, 'sidebar' => 1]) ?>
+
+			<div class="modal fade" id="authTokenModal" tabindex="-1" role="dialog" aria-labelledby="authTitleLabel" aria-hidden="true">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="authTitleLabel"><?= $language->getPhrase('oneword-auth-token') ?></h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+			        <span id="auth-token-modal-text" style="text-overflow:">... loading</span>
+			      </div>
+			    </div>
+			  </div>
+			</div>
 
 			<div class="container" style="padding-top: 10px">
 				<?php snippets_invalidemail::render() ?>
@@ -73,8 +96,11 @@ $ff_response->startOutputBuffer();
 										<?= ff_esc($ffrpc['type']) ?>
 									</td>
 
-									<td style="width: 60%;">
-										<span onmouseout="this.textContent=this.dataset.unfocus" onmouseover="this.textContent=this.dataset.focus" data-focus="<?= ff_esc($ffrpc['auth_token']) ?>" data-unfocus="<?= $language->getPhrase('misc-hover') ?>"><?= $language->getPhrase('misc-hover') ?></span>
+									<td>
+										<button data-token="<?= ff_esc($ffrpc['auth_token']) ?>" onclick="updateModal(this)" type="button" class="btn btn-link" data-toggle="modal" data-target="#authTokenModal" style="padding:0;margin:0;">
+											<?= $language->getPhrase('oneword-click-here') ?>
+										</button>
+										<!--<span onmouseout="this.textContent=this.dataset.unfocus" onmouseover="this.textContent=this.dataset.focus" data-focus="<?= ff_esc($ffrpc['auth_token']) ?>" data-unfocus="<?= $language->getPhrase('misc-hover') ?>"><?= $language->getPhrase('misc-hover') ?></span>-->
 									</td>
 
 									<td>
