@@ -797,5 +797,5 @@ function ff_concat()
 */
 function ff_isAlphanumeric($s)
 {
-	return preg_match('/^[a-zA-Z]+[a-zA-Z0-9._]+$/', $s);
+	return preg_match('/^[A-Za-z_-]+[A-Za-z0-9_-]+$/', $s);
 }
