@@ -106,7 +106,7 @@ class routes_containers_winnative_api_context extends route
 
 			'project-name' => $ff_config->get('project-name'),
 
-			'newest-version' => $mostRecentPackage['version'],
+			'newest-version' => ($mostRecentPackage ? $mostRecentPackage['version'] : '0'),
 		]);
 
 		return true;
