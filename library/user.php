@@ -1374,7 +1374,7 @@ class user
 	public function getConnectionCount()
 	{
 		if($rpc = ffrpc::getRpcByType(ffrpc::TYPE_BACKEND)) {
-			return intval($rpc->do('get-user-conneciton-count', [
+			return intval($rpc->do('get-user-connection-count', [
 				'user' => $this->id
 			]));
 		}
