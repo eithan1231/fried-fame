@@ -287,7 +287,7 @@ class ffrpc
     curl_close($ch);
 
     if($resultStatusCode !== 200) {
-      throw new Exception('FF-RPC Node returned uncessful status '. $resultStatusCode);
+      throw new Exception("FF-RPC Node returned unsuccessful status {$resultStatusCode} ($name)");
     }
 
     if($resultContentType === 'application/json') {

@@ -311,7 +311,7 @@ class node
 	public function getCurrentLoad()
 	{
 		if($rpc = ffrpc::getRpcByType(ffrpc::TYPE_BACKEND)) {
-			$res = $rpc->do('get-server-conneciton-count', [
+			$res = $rpc->do('get-server-connection-count', [
 				'node' => $this->getId()
 			]);
 
