@@ -73,14 +73,16 @@ $ff_response->startOutputBuffer();
 							<div id="downloads">
 								<h4><a href="#downloads">#</a> Downloads</h4>
 								<ul>
-									<?php foreach ($windowsPackages as $package): ?>
-										<li><a href="<?= $ff_router->getPath('cp_package_download', [
-											'id' => $package['id'],
-											'filename' => $package['filename'],
-											'version' => $package['version'],
-											'platform' => $package['platform'],
-										]) ?>"><?= ff_esc($package['version']) ?> Windows Package</a></li>
-									<?php endforeach; ?>
+									<?php if ($windowsPackages): ?>
+										<?php foreach ($windowsPackages as $package): ?>
+											<li><a href="<?= $ff_router->getPath('cp_package_download', [
+												'id' => $package['id'],
+												'filename' => $package['filename'],
+												'version' => $package['version'],
+												'platform' => $package['platform'],
+											]) ?>"><?= ff_esc($package['version']) ?> Windows Package</a></li>
+										<?php endforeach; ?>
+									<?php endif; ?>
 								</ul>
 							</div>
 							<hr>
@@ -89,12 +91,16 @@ $ff_response->startOutputBuffer();
 							<div id="install">
 								<h4><a href="#install">#</a> Installation</h4>
 								<ol>
-									<li>First you need to download <a href="<?= $ff_router->getPath('cp_package_download', [
-										'id' => $latestWindowsPackage['id'],
-										'filename' => $latestWindowsPackage['filename'],
-										'version' => $latestWindowsPackage['version'],
-										'platform' => $latestWindowsPackage['platform'],
-									]) ?>">this package</a>.</li>
+									<?php if ($latestWindowsPackage): ?>
+										<li>First you need to download <a href="<?= $ff_router->getPath('cp_package_download', [
+											'id' => $latestWindowsPackage['id'],
+											'filename' => $latestWindowsPackage['filename'],
+											'version' => $latestWindowsPackage['version'],
+											'platform' => $latestWindowsPackage['platform'],
+											]) ?>">this package</a>.</li>
+										<?php else: ?>
+											<li>First you need to downloads the windows package.</li>
+									<?php endif; ?>
 									<li>Extract zip file to a desired path.</li>
 									<li>Naviage to extracted folder.</li>
 									<li>Run lechr.exe.</li>

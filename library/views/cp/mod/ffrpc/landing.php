@@ -62,25 +62,27 @@ $ff_response->startOutputBuffer();
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach($ffrpcs as $ffrpc): ?>
-							<tr id="<?= ff_esc("rpc_{$ffrpc['id']}") ?>">
-								<td>
-									<?= ff_esc($ffrpc['id']) ?>
-								</td>
+						<?php if ($ffrpcs): ?>
+							<?php foreach($ffrpcs as $ffrpc): ?>
+								<tr id="<?= ff_esc("rpc_{$ffrpc['id']}") ?>">
+									<td>
+										<?= ff_esc($ffrpc['id']) ?>
+									</td>
 
-								<td>
-									<?= ff_esc($ffrpc['type']) ?>
-								</td>
+									<td>
+										<?= ff_esc($ffrpc['type']) ?>
+									</td>
 
-								<td style="width: 60%;">
-									<span onmouseout="this.textContent=this.dataset.unfocus" onmouseover="this.textContent=this.dataset.focus" data-focus="<?= ff_esc($ffrpc['auth_token']) ?>" data-unfocus="<?= $language->getPhrase('misc-hover') ?>"><?= $language->getPhrase('misc-hover') ?></span>
-								</td>
+									<td style="width: 60%;">
+										<span onmouseout="this.textContent=this.dataset.unfocus" onmouseover="this.textContent=this.dataset.focus" data-focus="<?= ff_esc($ffrpc['auth_token']) ?>" data-unfocus="<?= $language->getPhrase('misc-hover') ?>"><?= $language->getPhrase('misc-hover') ?></span>
+									</td>
 
-								<td>
-									<?= ff_esc("{$ffrpc['endpoint']}:{$ffrpc['port']}") ?>
-								</td>
-							</tr>
-						<?php endforeach; ?>
+									<td>
+										<?= ff_esc("{$ffrpc['endpoint']}:{$ffrpc['port']}") ?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						<?php endif; ?>
 					</tbody>
 				</table>
 			</div>
