@@ -1,4 +1,5 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -115,7 +116,7 @@ CREATE TABLE `groups` (
   `can_mod_groups` tinyint(1) NOT NULL,
   `can_mod_users` tinyint(1) NOT NULL,
   `can_mod_reviews` tinyint(1) NOT NULL,
-  `can_mod_audit` int(11) NOT NULL,
+  `can_mod_audit` tinyint(1) NOT NULL,
   `can_mod_payments` tinyint(1) NOT NULL,
   `can_mod_feedback` tinyint(1) NOT NULL,
   `can_mod_giftcode` tinyint(1) NOT NULL,
@@ -123,6 +124,7 @@ CREATE TABLE `groups` (
   `can_mod_announcement` tinyint(1) NOT NULL,
   `can_mod_packages` tinyint(1) NOT NULL,
   `can_mod_nodes` tinyint(1) NOT NULL,
+  `can_mod_internalapi` tinyint(1) NOT NULL,
   `can_purchase` tinyint(1) NOT NULL,
   `can_api` tinyint(1) NOT NULL,
   `can_refer` tinyint(1) NOT NULL,
@@ -131,15 +133,25 @@ CREATE TABLE `groups` (
   `can_feedback` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `groups` (`id`, `name`, `color`, `can_mod_language`, `can_mod_support`, `can_mod_groups`, `can_mod_users`, `can_mod_reviews`, `can_mod_audit`, `can_mod_payments`, `can_mod_feedback`, `can_mod_giftcode`, `can_mod_ffrpc`, `can_mod_announcement`, `can_mod_packages`, `can_mod_nodes`, `can_purchase`, `can_api`, `can_refer`, `can_support`, `can_review`, `can_feedback`) VALUES
-(1, 'Awaiting Verification', '#ffffff', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0),
-(2, 'Normal', 'red', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1),
-(3, 'Administrator', 'lightblue', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-(4, 'Disabled', 'black', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+INSERT INTO `groups` (`id`, `name`, `color`, `can_mod_language`, `can_mod_support`, `can_mod_groups`, `can_mod_users`, `can_mod_reviews`, `can_mod_audit`, `can_mod_payments`, `can_mod_feedback`, `can_mod_giftcode`, `can_mod_ffrpc`, `can_mod_announcement`, `can_mod_packages`, `can_mod_nodes`, `can_mod_internalapi`, `can_purchase`, `can_api`, `can_refer`, `can_support`, `can_review`, `can_feedback`) VALUES
+(1, 'Awaiting Verification', '#ffffff', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0),
+(2, 'Normal', 'red', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1),
+(3, 'Administrator', 'lightblue', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+(4, 'Disabled', 'black', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+
+CREATE TABLE `internalapi` (
+  `id` int(11) NOT NULL,
+  `date` int(11) NOT NULL,
+  `expiry` int(11) NOT NULL,
+  `enabled` tinyint(1) NOT NULL,
+  `user_id` int(11) NOT NULL COMMENT 'who created it',
+  `permit` varchar(32) NOT NULL,
+  `token` varchar(256) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `mailing_list` (
   `id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED DEFAULT '0',
+  `user_id` int(10) UNSIGNED DEFAULT 0,
   `email` varchar(254) NOT NULL,
   `enabled` tinyint(1) NOT NULL,
   `removal_token` varchar(16) NOT NULL
@@ -880,7 +892,28 @@ INSERT INTO `phrases` (`id`, `rev`, `language_code`, `phrase_name`, `phrase`) VA
 (650, 0, 'en', 'email-publicsupportverification-message-html', 'Hello {name},\r\n<br/><br/>\r\n\r\nWe have received a request for a support ticket. You are receiving this email as validation that you requested this support. If you do not remember requesting a ticket, ignore this message. Otherwise <a href=\"{validate_url}\">click here</a> to validate request.\r\n<br/><br/>\r\n\r\nRegards,\r\n<br/>\r\n{project}'),
 (651, 0, 'en', 'misc-name-too-long', 'Name too long'),
 (652, 0, 'en', 'misc-contact-validated', 'Your email has been validated. Now allow time for administration to check the enquiry.'),
-(653, 0, 'en', 'navbar-item-register', 'Register');
+(653, 0, 'en', 'navbar-item-register', 'Register'),
+(654, 0, 'en', 'audit-admin-internalapinew', 'New Internal API Key Created for permit {permit}, id: {id}'),
+(655, 0, 'en', 'misc-invalid-permit-type', 'Invalid permit type'),
+(656, 0, 'en', 'oneword-internalapi', 'InternalAPI'),
+(657, 0, 'en', 'mod-internalapi-list-create-new', 'Create new Internal API'),
+(658, 0, 'en', 'mod-internalapi-list', 'Internal API List'),
+(659, 0, 'en', 'oneword-permit', 'Permit'),
+(660, 1, 'en', 'mod-internalapi-list-view-token', 'Click to view full token <u>{token-censored}</u>'),
+(661, 0, 'en', 'oneword-expires', 'Expires'),
+(662, 0, 'en', 'oneword-enabled', 'Enabled'),
+(663, 0, 'en', 'mod-internal-api-edit-view', 'Edit and view token'),
+(664, 0, 'en', 'title-internalapi-list', 'Internal API List - {project}'),
+(665, 0, 'en', 'title-internalapi-new', 'Internal API New - {project}'),
+(666, 0, 'en', 'mod-internalapi-new-title', 'New InternalAPI'),
+(667, 0, 'en', 'mod-internalapi-new-text', 'This page will create a new Internal API Token for internal services. Once you submit request to create it, it will redirect you to a page containing relevant information for the new API token, including the token itself.'),
+(668, 0, 'en', 'title-internalapi-edit', 'Internal API Edit - {project}'),
+(669, 0, 'en', 'mod-internalapi-edit-title', 'Editing Internal API'),
+(670, 0, 'en', 'mod-internalapi-edit-text', 'Editing Internal API {id} for the permit <u>{permit}</u>\r\n</br></br>\r\n\r\nCreation Date: <u>{date}</u>\r\n</br>\r\nExpiration Date: <u>{expiry}</u>\r\n</br>\r\nEnabled: <u>{enabled}</u>\r\n</br></br>\r\nToken: <u>{token}</u>\r\n'),
+(671, 0, 'en', 'audit-admin-internalapiview', 'Viewed InternalAPI {id} for {permit}'),
+(672, 0, 'en', 'audit-admin-internalapiedit-enabled', 'InternalAPI {id} for {permit} was enabled'),
+(673, 0, 'en', 'audit-admin-internalapiedit-disabled', 'InternalAPI {id} for {permit} was disabled'),
+(674, 0, 'en', 'misc-bad-platform', 'Platform is invalid');
 
 CREATE TABLE `postlimiter` (
   `name` varchar(32) NOT NULL,
@@ -968,7 +1001,7 @@ CREATE TABLE `support_threads` (
 
 CREATE TABLE `tasks` (
   `id` int(10) UNSIGNED NOT NULL,
-  `taskjob_object` mediumtext,
+  `taskjob_object` mediumtext DEFAULT NULL,
   `date` int(10) UNSIGNED NOT NULL,
   `run_count` int(10) UNSIGNED NOT NULL,
   `is_running` tinyint(1) NOT NULL,
@@ -1085,6 +1118,10 @@ ALTER TABLE `giftcodes`
 
 ALTER TABLE `groups`
   ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `internalapi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `token` (`token`);
 
 ALTER TABLE `mailing_list`
   ADD PRIMARY KEY (`id`);
@@ -1216,6 +1253,9 @@ ALTER TABLE `giftcodes`
 ALTER TABLE `groups`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
+ALTER TABLE `internalapi`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `mailing_list`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
@@ -1238,7 +1278,7 @@ ALTER TABLE `payment_state`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `phrases`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=654;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=675;
 
 ALTER TABLE `reviews`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
@@ -1277,10 +1317,11 @@ ALTER TABLE `user_auth`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `user_subscriptions`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `vpn_nodes`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
