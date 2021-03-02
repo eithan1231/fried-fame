@@ -84,10 +84,6 @@ class routes_containers_winnative_api_context extends route
 				'mode' => 'host'
 			]),
 
-			'autoapi-heartbeat' => $ff_router->getPath('containers_winnative_api_heartbeet', [], [
-				'mode' => 'host'
-			]),
-
 			'autoapi-list' => $ff_router->getPath('containers_winnative_api_list', [], [
 				'mode' => 'host'
 			]),

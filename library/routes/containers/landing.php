@@ -71,36 +71,7 @@ class routes_containers_landing extends route
 	{
     global $ff_router, $ff_context;
 
-    if(!containers::canAccess($this->getName(), $request, $response)) {
-      $response->redirect($ff_router->getPath('landing'));
-      return true;
-    }
-
-    $platform = '';
-    if(!$platform = $request->getHeader('x-platform')) {
-      $platform = $request->get('platform');
-    }
-
-    if(!$platform) {
-      $response->setHttpStatus(401);
-      $response->setHttpHeader('Content-type', 'text/plain');
-      $response->appendBody('Unsupported platform');
-      return true;
-    }
-
-    switch(strtolower($platform)) {
-      case 'win32': {
-        $response->redirect($ff_router->getPath('containers_windows_login'));
-        break;
-      }
-
-      default: {
-        $response->setHttpStatus(401);
-        $response->setHttpHeader('Content-type', 'text/plain');
-        $response->appendBody('Unsupported platform');
-        break;
-      }
-    }
+		$response->redirect($ff_router->getPath('landing'));
 
 		return true;
 	}

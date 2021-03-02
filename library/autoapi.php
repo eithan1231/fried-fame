@@ -24,13 +24,8 @@ class autoapi
 	private $user_id = 0;
 	private $token = '';
 	private $date = 0;
-	private $last_heartbeet = 0;
+	private $expiry = 0;
 	private $enabled = false;
-
-	/**
-	* How long an api token is considered value from last heartbeet.
-	*/
-	const TOKEN_VALID_DURATION = FF_HOUR;
 
 	/**
 	* Links the instance of the AutoAPI with a id,
@@ -48,7 +43,7 @@ class autoapi
 				`user_id`,
 				`token`,
 				`date`,
-				`last_heartbeet`,
+				`expiry`,
 				`enabled`
 			FROM
 				`autoapi`
@@ -58,7 +53,7 @@ class autoapi
 			'id' => 'int',
 			'user_id' => 'int',
 			'date' => 'int',
-			'last_heartbeet' => 'int',
+			'expiry' => 'int',
 			'enabled' => 'bool'
 		]);
 
@@ -89,7 +84,7 @@ class autoapi
 				`user_id`,
 				`token`,
 				`date`,
-				`last_heartbeet`,
+				`expiry`,
 				`enabled`
 			FROM
 				`autoapi`
@@ -99,7 +94,7 @@ class autoapi
 			'id' => 'int',
 			'user_id' => 'int',
 			'date' => 'int',
-			'last_heartbeet' => 'int',
+			'expiry' => 'int',
 			'enabled' => 'bool'
 		]);
 
@@ -169,40 +164,18 @@ class autoapi
 
 		$ff_sql->query("
 			INSERT INTO `autoapi`
-			(`id`, `user_id`, `token`, `date`, `last_heartbeet`, `enabled`)
+			(`id`, `user_id`, `token`, `date`, `expiry`, `enabled`)
 			VALUES (
 				NULL,
 				". $ff_sql->quote($user->getId()) .",
 				". $ff_sql->quote($token) .",
 				". $ff_sql->quote(FF_TIME) .",
-				". $ff_sql->quote(FF_TIME) .",
+				". $ff_sql->quote(FF_TIME + FF_YEAR) .",
 				1
 			)
 		");
 
 		return autoapi::getAutoAPIById($ff_sql->getLastInsertId());
-	}
-
-	/**
-	* Runs the heartbeet
-	*/
-	public function heartbeat()
-	{
-		global $ff_sql;
-
-		if(!$this->isEnabled()) {
-			// Instance is disabled, so updating heartbeet is useless.
-			return false;
-		}
-
-		$last_heartbeet = FF_TIME;
-		$ff_sql->query("
-			UPDATE `autoapi`
-			SET last_heartbeet = ". $ff_sql->quote(FF_TIME) ."
-			WHERE id = ". $ff_sql->quote($this->getId()) ."
-		");
-
-		return true;
 	}
 
 	/**
@@ -271,13 +244,34 @@ class autoapi
 	}
 
 	/**
+	* Gets the date this api session expires.
+	*/
+	public function getExpiry()
+	{
+		return $this->expiry;
+	}
+
+	/**
+	* $this->getExpiry() alias
+	*/
+	public function getExpiryDate()
+	{
+		return $this->getExpiry();
+	}
+
+	/**
+	* expiry check
+	*/
+	public function hasExpired()
+	{
+		return $this->getExpiry() < FF_DATE
+	}
+
+	/**
 	* Whether this api token is valid.
 	*/
 	public function isValid()
 	{
-		return (
-			$this->getEnabled() &&
-			($this->last_heartbeet + self::TOKEN_VALID_DURATION > FF_TIME)
-		);
+		return $this->getEnabled() && !$this->hasExpired();
 	}
 }

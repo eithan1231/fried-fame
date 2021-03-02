@@ -121,7 +121,8 @@ class routes_containers_winnative_api_authenticate extends route
 			'message' => 'okay',
 			'token' => $autoapi->getToken(),
 			'node-auth' => $user->getNodeAuth(),
-			'user-id' => $user->getId()
+			'user-id' => $user->getId(),
+			'username' => $user->getUsername()
 		]);
 
 		return true;

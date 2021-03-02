@@ -21,7 +21,6 @@ class user
 	private $validEmail = true;
 	private $id = 0;
 	private $groupId = 0;
-	private $supportThreads = [];
 	private $nodeAuth = '';
 
 
