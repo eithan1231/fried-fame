@@ -30,6 +30,7 @@ CREATE TABLE `autoapi` (
   `user_id` int(10) UNSIGNED NOT NULL,
   `token` varchar(32) NOT NULL,
   `date` int(10) UNSIGNED NOT NULL,
+  `expiry` int(11) NOT NULL,
   `enabled` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
