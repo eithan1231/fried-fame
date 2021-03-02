@@ -47,8 +47,8 @@ CREATE TABLE `connections` (
   `connect_date` int(11) UNSIGNED NOT NULL,
   `disconnect_date` int(11) UNSIGNED NOT NULL,
   `localip` varchar(39) NOT NULL,
-  `data_sent` int(10) UNSIGNED NOT NULL,
-  `data_received` int(10) UNSIGNED NOT NULL
+  `data_sent` bigint(20) UNSIGNED NOT NULL,
+  `data_received` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `coupons` (
