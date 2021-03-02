@@ -134,20 +134,11 @@ $ff_router->register(new routes_cp_mod_internalapi_new());
 $ff_router->register(new routes_cp_mod_internalapi_list());
 $ff_router->register(new routes_cp_mod_internalapi_edit());
 
-// WebContainer automatic detector and redirecter.
-$ff_router->register(new routes_containers_redirect());
-
-// Windows WebContainer.
-$ff_router->register(new routes_containers_windows_landing());
-$ff_router->register(new routes_containers_windows_login());
-$ff_router->register(new routes_containers_windows_additionalauth());
-$ff_router->register(new routes_containers_windows_reauth());
 
 // WinNative
 $ff_router->register(new routes_containers_winnative_api_list());
 $ff_router->register(new routes_containers_winnative_api_context());
 $ff_router->register(new routes_containers_winnative_api_connect());
-$ff_router->register(new routes_containers_winnative_api_heartbeet());
 $ff_router->register(new routes_containers_winnative_api_authenticate());
 $ff_router->register(new routes_containers_winnative_api_openvpnconfig());
 
@@ -155,7 +146,6 @@ $ff_router->register(new routes_containers_winnative_api_openvpnconfig());
 $ff_router->register(new routes_containers_nixnative_api_list());
 $ff_router->register(new routes_containers_nixnative_api_context());
 $ff_router->register(new routes_containers_nixnative_api_connect());
-$ff_router->register(new routes_containers_nixnative_api_heartbeet());
 $ff_router->register(new routes_containers_nixnative_api_authenticate());
 $ff_router->register(new routes_containers_nixnative_api_openvpnconfig());
 
