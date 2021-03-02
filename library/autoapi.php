@@ -264,7 +264,7 @@ class autoapi
 	*/
 	public function hasExpired()
 	{
-		return $this->getExpiry() < FF_DATE
+		return $this->getExpiry() < FF_DATE;
 	}
 
 	/**
